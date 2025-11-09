@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nodos - Tecnología e Innovación</title>
+    <title>Noda - Tecnología e Innovación</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -14,6 +14,7 @@
             --light-color: #f8f9fa;
             --dark-color: #2c3e50;
             --success-color: #2ecc71;
+            --warning-color: #f39c12;
         }
 
         * {
@@ -110,15 +111,15 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background-color: rgba(44, 62, 80, 0.9);
+            background-color: rgba(44, 62, 80, 0.95);
             z-index: 1000;
             padding: 1rem 0;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         nav.scrolled {
             padding: 0.5rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .nav-container {
@@ -147,6 +148,7 @@
         .nav-links {
             display: flex;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links li {
@@ -176,18 +178,31 @@
             width: 100%;
         }
 
-        /* Menú lateral de redes sociales */
+        .admin-btn {
+            background-color: var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* Menú lateral de redes sociales - CORREGIDO */
         .social-menu {
             position: fixed;
             right: -250px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: var(--secondary-color);
-            border-radius: 10px 0 0 10px;
-            padding: 1rem;
+            background: linear-gradient(135deg, var(--secondary-color), #34495e);
+            border-radius: 15px 0 0 15px;
+            padding: 1.5rem;
             z-index: 999;
-            transition: right 0.5s ease;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.2);
+            min-width: 250px;
         }
 
         .social-menu.active {
@@ -196,19 +211,26 @@
 
         .social-toggle {
             position: absolute;
-            left: -40px;
+            left: -50px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: var(--secondary-color);
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             color: white;
-            width: 40px;
-            height: 60px;
+            width: 50px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px 0 0 10px;
+            border-radius: 15px 0 0 15px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .social-toggle:hover {
+            background: linear-gradient(135deg, #2980b9, var(--primary-color));
+            transform: translateY(-50%) translateX(-5px);
         }
 
         .social-links {
@@ -219,17 +241,42 @@
 
         .social-links a {
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            padding: 0.5rem;
-            border-radius: 5px;
+            padding: 0.8rem;
+            border-radius: 10px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-links a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: width 0.3s ease;
+        }
+
+        .social-links a:hover::before {
+            width: 100%;
         }
 
         .social-links a:hover {
-            transform: translateX(-5px);
+            transform: translateX(-10px);
             color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links i {
+            margin-right: 1rem;
+            width: 25px;
+            text-align: center;
         }
 
         /* Galería */
@@ -260,39 +307,40 @@
             transform: translateX(-50%);
             width: 80px;
             height: 4px;
-            background-color: var(--primary-color);
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
         }
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
         .gallery-item {
             position: relative;
             overflow: hidden;
-            border-radius: 10px;
+            border-radius: 15px;
             height: 250px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s ease;
         }
 
         .gallery-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
 
         .gallery-item:hover img {
-            transform: scale(1.2);
+            transform: scale(1.15);
         }
 
         .gallery-overlay {
@@ -301,12 +349,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
             display: flex;
             align-items: flex-end;
-            padding: 1rem;
+            padding: 1.5rem;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
         }
 
         .gallery-item:hover .gallery-overlay {
@@ -315,7 +363,13 @@
 
         .gallery-overlay h3 {
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay h3 {
+            transform: translateY(0);
         }
 
         /* Modal de imagen */
@@ -325,14 +379,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .image-modal.active {
@@ -356,6 +410,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            border-radius: 10px;
         }
 
         .modal-close {
@@ -363,33 +418,42 @@
             top: -40px;
             right: 0;
             color: white;
-            font-size: 2rem;
+            font-size: 2.5rem;
             cursor: pointer;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-close:hover {
             color: var(--accent-color);
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         /* Sección de servicios */
         .services-section {
             padding: 5rem 0;
-            background-color: var(--light-color);
+            background: linear-gradient(135deg, var(--light-color), #e8f4f8);
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
         }
 
         .service-card {
-            background-color: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
         }
@@ -401,9 +465,9 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
             transform: translateX(-100%);
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
 
         .service-card:hover::before {
@@ -411,31 +475,32 @@
         }
 
         .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .service-icon {
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: var(--primary-color);
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease, color 0.3s ease;
+            margin-bottom: 1.5rem;
+            transition: all 0.4s ease;
+            display: inline-block;
         }
 
         .service-card:hover .service-icon {
-            transform: rotate(10deg) scale(1.1);
+            transform: rotateY(360deg) scale(1.1);
             color: var(--accent-color);
         }
 
         .service-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 1rem;
             color: var(--secondary-color);
         }
 
         .service-card p {
             color: #666;
-            line-height: 1.6;
+            line-height: 1.7;
             margin-bottom: 1.5rem;
         }
 
@@ -445,11 +510,12 @@
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .service-link:hover {
             color: var(--accent-color);
+            transform: translateX(5px);
         }
 
         .service-link i {
@@ -469,22 +535,22 @@
 
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
         }
 
         .course-card {
-            background-color: white;
-            border-radius: 15px;
+            background: white;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
             position: relative;
         }
 
         .course-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .course-image {
@@ -497,7 +563,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
 
         .course-card:hover .course-image img {
@@ -508,35 +574,39 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
             color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
+            padding: 8px 15px;
+            border-radius: 25px;
             font-size: 0.8rem;
             font-weight: bold;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
         }
 
         .course-content {
-            padding: 1.5rem;
+            padding: 2rem;
         }
 
         .course-content h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
             color: var(--secondary-color);
         }
 
         .course-content p {
             color: #666;
             line-height: 1.6;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .course-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            padding: 0.8rem 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
         }
 
         .course-duration, .course-level {
@@ -547,51 +617,55 @@
         }
 
         .course-duration i, .course-level i {
-            margin-right: 0.3rem;
+            margin-right: 0.5rem;
             color: var(--primary-color);
         }
 
         .course-price {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .course-btn {
             display: block;
             width: 100%;
-            padding: 0.8rem;
-            background-color: var(--primary-color);
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             color: white;
             text-align: center;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 10px;
             font-weight: 600;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
 
         .course-btn:hover {
-            background-color: var(--secondary-color);
+            background: linear-gradient(135deg, #2980b9, var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
         /* Sección de productos */
         .products-section {
             padding: 5rem 0;
-            background-color: var(--light-color);
+            background: linear-gradient(135deg, var(--light-color), #e8f4f8);
         }
 
         .products-tabs {
             display: flex;
             justify-content: center;
             margin-bottom: 3rem;
-            gap: 1rem;
+            gap: 1.5rem;
             flex-wrap: wrap;
         }
 
         .tab-btn {
-            padding: 0.8rem 2rem;
-            background-color: white;
+            padding: 1rem 2.5rem;
+            background: white;
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
             border-radius: 30px;
@@ -601,20 +675,23 @@
             font-size: 1rem;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .tab-btn:hover {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             color: white;
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
         }
 
         .tab-btn.active {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             color: white;
             transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
         }
 
         .tab-btn::after {
@@ -625,7 +702,7 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.3);
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
@@ -646,15 +723,15 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
         }
 
         .product-card {
-            background-color: white;
-            border-radius: 15px;
+            background: white;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.4s ease;
             position: relative;
             transform-style: preserve-3d;
@@ -663,7 +740,7 @@
 
         .product-card:hover {
             transform: translateY(-15px) rotateX(5deg);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
         }
 
         .product-image {
@@ -676,59 +753,60 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
 
         .product-card:hover .product-image img {
-            transform: scale(1.1) translateZ(20px);
+            transform: scale(1.15) translateZ(20px);
         }
 
         .product-badge {
             position: absolute;
             top: 15px;
             left: 15px;
-            background-color: var(--success-color);
+            background: linear-gradient(135deg, var(--success-color), #27ae60);
             color: white;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: bold;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
         }
 
         .product-content {
-            padding: 1.5rem;
+            padding: 2rem;
             position: relative;
             z-index: 1;
         }
 
         .product-content h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
             color: var(--secondary-color);
         }
 
         .product-content p {
             color: #666;
             line-height: 1.6;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .product-price {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .product-btn {
             display: block;
             width: 100%;
-            padding: 0.8rem;
-            background-color: var(--primary-color);
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             color: white;
             text-align: center;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 10px;
             font-weight: 600;
             transition: all 0.3s ease;
             border: none;
@@ -736,9 +814,235 @@
         }
 
         .product-btn:hover {
-            background-color: var(--secondary-color);
+            background: linear-gradient(135deg, #2980b9, var(--primary-color));
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Modal de compra */
+        .purchase-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .purchase-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .purchase-container {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .purchase-modal.active .purchase-container {
+            transform: scale(1);
+        }
+
+        .purchase-header {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+
+        .purchase-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .purchase-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .purchase-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .purchase-body {
+            padding: 2rem;
+        }
+
+        .product-summary {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .product-summary h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-summary .price {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .delivery-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .delivery-option {
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .delivery-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .delivery-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .delivery-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .purchase-total {
+            background: linear-gradient(135deg, var(--light-color), #e8f4f8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-row.final {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            padding-top: 0.5rem;
+            border-top: 2px solid #ddd;
+        }
+
+        .submit-purchase {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success-color), #27ae60);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-purchase:hover {
+            background: linear-gradient(135deg, #27ae60, var(--success-color));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
         }
 
         /* Sección de contacto */
@@ -764,239 +1068,97 @@
         .contact-item {
             display: flex;
             align-items: flex-start;
-            gap: 1rem;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--light-color);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
         .contact-icon {
-            width: 50px;
-            height: 50px;
-            background-color: var(--light-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .contact-details h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-            color: var(--secondary-color);
-        }
-
-        .contact-details p {
-            color: #666;
-        }
-
-        .contact-form {
-            background-color: var(--light-color);
-            padding: 2rem;
-            border-radius: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--secondary-color);
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 0.8rem;
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            background-color: var(--secondary-color);
-        }
-
-        /* Chatbot */
-        .chatbot {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-        }
-
-        .chatbot-toggle {
             width: 60px;
             height: 60px;
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
-        .chatbot-toggle:hover {
-            background-color: var(--secondary-color);
-            transform: scale(1.1);
-        }
-
-        .chatbot-container {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 350px;
-            height: 450px;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.8);
-            transition: all 0.3s ease;
-        }
-
-        .chatbot-container.active {
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1);
-        }
-
-        .chatbot-header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem;
-            border-radius: 15px 15px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chatbot-header h3 {
+        .contact-details h3 {
             font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
         }
 
-        .chatbot-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
+        .contact-details p {
+            color: #666;
+            line-height: 1.6;
         }
 
-        .chatbot-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 0.8rem;
-            border-radius: 10px;
-            line-height: 1.4;
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .message.bot {
-            align-self: flex-start;
-            background-color: var(--light-color);
-        }
-
-        .chatbot-input {
-            display: flex;
-            padding: 1rem;
-            border-top: 1px solid #eee;
-        }
-
-        .chatbot-input input {
-            flex: 1;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
+        .contact-form {
+            background: linear-gradient(135deg, var(--light-color), #e8f4f8);
+            padding: 2.5rem;
             border-radius: 20px;
-            margin-right: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .chatbot-input button {
-            background-color: var(--primary-color);
+        .contact-form h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             color: white;
+            text-align: center;
             border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
         }
 
-        .chatbot-input button:hover {
-            background-color: var(--secondary-color);
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #2980b9, var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
         }
 
         /* Footer */
         footer {
-            background-color: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color), #1a252f);
             color: white;
-            padding: 3rem 0 1rem;
+            padding: 4rem 0 2rem;
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
         }
 
         .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
             position: relative;
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.8rem;
         }
 
         .footer-column h3::after {
@@ -1004,14 +1166,16 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 50px;
-            height: 2px;
-            background-color: var(--primary-color);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
         }
 
         .footer-column p {
             line-height: 1.8;
-            color: #ccc;
+            color: #bbb;
+            margin-bottom: 1.5rem;
         }
 
         .footer-links {
@@ -1019,36 +1183,38 @@
         }
 
         .footer-links li {
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
         }
 
         .footer-links a {
-            color: #ccc;
+            color: #bbb;
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
         }
 
         .footer-links a:hover {
             color: var(--primary-color);
+            transform: translateX(5px);
         }
 
         .footer-links a i {
-            margin-right: 0.5rem;
+            margin-right: 0.8rem;
             font-size: 0.9rem;
+            width: 20px;
         }
 
         .footer-social {
             display: flex;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .footer-social a {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1058,15 +1224,459 @@
         }
 
         .footer-social a:hover {
-            background-color: var(--primary-color);
-            transform: translateY(-3px);
+            background: var(--primary-color);
+            transform: translateY(-5px);
         }
 
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ccc;
+            color: #bbb;
+        }
+
+        /* Chatbot mejorado */
+        .chatbot {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chatbot-toggle {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.5);
+        }
+
+        .chatbot-toggle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        .chatbot-container {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: #2ecc71;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chatbot-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: #f8f9fa;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 15px;
+            line-height: 1.5;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: white;
+            color: var(--text-color);
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.typing {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.8rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 1.5rem;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            margin-right: 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .chatbot-input button {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .chatbot-input button:hover {
+            background: linear-gradient(135deg, #2980b9, var(--primary-color));
+            transform: scale(1.1);
+        }
+
+        /* Login de administrador */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .admin-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .admin-container {
+            background: white;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .admin-modal.active .admin-container {
+            transform: scale(1);
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+
+        .admin-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-body {
+            padding: 2.5rem;
+        }
+
+        .admin-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-form .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .admin-form .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-form .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #c0392b, var(--accent-color));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Panel de administrador */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease;
+            z-index: 3500;
+            overflow-y: auto;
+        }
+
+        .admin-panel.active {
+            right: 0;
+        }
+
+        .admin-panel-header {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-panel-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .admin-panel-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .admin-panel-body {
+            padding: 2rem;
+        }
+
+        .admin-section {
+            margin-bottom: 2rem;
+        }
+
+        .admin-section h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .editable {
+            background: var(--light-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .editable:hover {
+            border-color: var(--primary-color);
+        }
+
+        .editable:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--success-color), #27ae60);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            background: linear-gradient(135deg, #27ae60, var(--success-color));
+            transform: translateY(-2px);
         }
 
         /* Animaciones */
@@ -1107,8 +1717,13 @@
             }
 
             .chatbot-container {
-                width: 300px;
-                height: 400px;
+                width: 350px;
+                height: 450px;
+            }
+
+            .admin-panel {
+                width: 350px;
+                right: -350px;
             }
         }
 
@@ -1136,7 +1751,7 @@
             }
 
             .chatbot-container {
-                width: 280px;
+                width: 320px;
                 right: -20px;
             }
 
@@ -1146,7 +1761,16 @@
             }
 
             .tab-btn {
-                width: 200px;
+                width: 250px;
+            }
+
+            .delivery-options {
+                grid-template-columns: 1fr;
+            }
+
+            .purchase-container {
+                width: 95%;
+                margin: 1rem;
             }
         }
 
@@ -1158,6 +1782,52 @@
             .footer-content {
                 grid-template-columns: 1fr;
             }
+
+            .admin-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        /* Notificaciones */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: -400px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 5000;
+            transition: right 0.3s ease;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            right: 20px;
+        }
+
+        .notification.success {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .notification.error {
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .notification.info {
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .notification-message {
+            color: #666;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -1167,7 +1837,7 @@
         <div class="nav-container">
             <a href="#" class="logo">
                 <i class="fas fa-network-wired"></i>
-                Nodos
+                Noda
             </a>
             <ul class="nav-links">
                 <li><a href="#home">Inicio</a></li>
@@ -1176,6 +1846,9 @@
                 <li><a href="#courses">Cursos</a></li>
                 <li><a href="#products">Productos</a></li>
                 <li><a href="#contact">Contacto</a></li>
+                <li><a href="#" class="admin-btn" onclick="openAdminLogin()">
+                    <i class="fas fa-user-shield"></i> Admin
+                </a></li>
             </ul>
         </div>
     </nav>
@@ -1183,24 +1856,24 @@
     <!-- Header con carrusel -->
     <header id="home">
         <div class="carousel-container">
-            <div class="carousel-slide active" style="background-image: url('https://picsum.photos/seed/tech1/1920/1080.jpg');">
+            <div class="carousel-slide active" style="background-image: url('https://picsum.photos/seed/tech-maintenance/1920/1080.jpg');">
                 <div class="carousel-content">
-                    <h1>Innovación Tecnológica</h1>
-                    <p>Conectando ideas, creando soluciones</p>
+                    <h1>Mantenimiento Tecnológico</h1>
+                    <p>Soluciones expertas para el cuidado de tus equipos</p>
                     <a href="#services" class="btn-primary">Descubre más</a>
                 </div>
             </div>
-            <div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/tech2/1920/1080.jpg');">
+            <div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/tech-repair/1920/1080.jpg');">
                 <div class="carousel-content">
-                    <h1>Soluciones Digitales</h1>
-                    <p>Transformando negocios con tecnología de vanguardia</p>
+                    <h1>Reparación Profesional</h1>
+                    <p>Recupera el rendimiento óptimo de tus dispositivos</p>
                     <a href="#products" class="btn-primary">Ver productos</a>
                 </div>
             </div>
-            <div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/tech3/1920/1080.jpg');">
+            <div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/tech-installation/1920/1080.jpg');">
                 <div class="carousel-content">
-                    <h1>Aprendizaje Continuo</h1>
-                    <p>Cursos de certificación para profesionales</p>
+                    <h1>Instalación Especializada</h1>
+                    <p>Configuración profesional de sistemas tecnológicos</p>
                     <a href="#courses" class="btn-primary">Explorar cursos</a>
                 </div>
             </div>
@@ -1210,42 +1883,42 @@
     <!-- Galería -->
     <section id="gallery" class="gallery-section">
         <div class="container">
-            <h2 class="section-title">Galería de Proyectos</h2>
+            <h2 class="section-title">Nuestros Trabajos</h2>
             <div class="gallery">
                 <div class="gallery-item">
-                    <img src="https://picsum.photos/seed/project1/400/300.jpg" alt="Proyecto 1">
+                    <img src="https://picsum.photos/seed/maintenance-work/400/300.jpg" alt="Mantenimiento">
                     <div class="gallery-overlay">
-                        <h3>Desarrollo Web</h3>
+                        <h3>Mantenimiento Preventivo</h3>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://picsum.photos/seed/project2/400/300.jpg" alt="Proyecto 2">
+                    <img src="https://picsum.photos/seed/repair-service/400/300.jpg" alt="Reparación">
                     <div class="gallery-overlay">
-                        <h3>Aplicaciones Móviles</h3>
+                        <h3>Reparación de Equipos</h3>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://picsum.photos/seed/project3/400/300.jpg" alt="Proyecto 3">
+                    <img src="https://picsum.photos/seed/installation-tech/400/300.jpg" alt="Instalación">
                     <div class="gallery-overlay">
-                        <h3>Inteligencia Artificial</h3>
+                        <h3>Instalación de Redes</h3>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://picsum.photos/seed/project4/400/300.jpg" alt="Proyecto 4">
+                    <img src="https://picsum.photos/seed/server-maintenance/400/300.jpg" alt="Servidores">
                     <div class="gallery-overlay">
-                        <h3>Cloud Computing</h3>
+                        <h3>Mantenimiento de Servidores</h3>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://picsum.photos/seed/project5/400/300.jpg" alt="Proyecto 5">
+                    <img src="https://picsum.photos/seed/computer-repair/400/300.jpg" alt="Computadoras">
                     <div class="gallery-overlay">
-                        <h3>Ciberseguridad</h3>
+                        <h3>Reparación de Computadoras</h3>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://picsum.photos/seed/project6/400/300.jpg" alt="Proyecto 6">
+                    <img src="https://picsum.photos/seed/network-setup/400/300.jpg" alt="Redes">
                     <div class="gallery-overlay">
-                        <h3>Blockchain</h3>
+                        <h3>Configuración de Redes</h3>
                     </div>
                 </div>
             </div>
@@ -1267,18 +1940,50 @@
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-code"></i>
+                        <i class="fas fa-tools"></i>
                     </div>
-                    <h3>Desarrollo a Medida</h3>
-                    <p>Creación de software personalizado adaptado a las necesidades específicas de tu empresa, con las últimas tecnologías y mejores prácticas.</p>
+                    <h3>Mantenimiento Preventivo</h3>
+                    <p>Servicio completo de mantenimiento para prevenir fallos y prolongar la vida útil de tus equipos tecnológicos.</p>
                     <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-mobile-alt"></i>
+                        <i class="fas fa-wrench"></i>
                     </div>
-                    <h3>Aplicaciones Móviles</h3>
-                    <p>Desarrollo de aplicaciones nativas y multiplataforma para iOS y Android, con diseño intuitivo y experiencia de usuario excepcional.</p>
+                    <h3>Reparación Especializada</h3>
+                    <p>Diagnóstico y reparación de computadoras, laptops, servidores y equipos de red por técnicos certificados.</p>
+                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Instalación Profesional</h3>
+                    <p>Instalación y configuración de sistemas operativos, redes, servidores y software especializado.</p>
+                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Seguridad Informática</h3>
+                    <p>Protección integral contra virus, malware y ciberataques con soluciones de seguridad avanzadas.</p>
+                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Recuperación de Datos</h3>
+                    <p>Servicios profesionales para recuperar información perdida de discos duros, SSD y dispositivos de almacenamiento.</p>
+                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3>Infraestructura de Red</h3>
+                    <p>Diseño, implementación y mantenimiento de redes empresariales con tecnología de vanguardia.</p>
                     <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="service-card">
@@ -1286,47 +1991,15 @@
                         <i class="fas fa-cloud"></i>
                     </div>
                     <h3>Soluciones Cloud</h3>
-                    <p>Migración, implementación y gestión de infraestructura en la nube para optimizar recursos y garantizar escalabilidad.</p>
+                    <p>Migración y gestión en la nube para optimizar recursos y garantizar la continuidad del negocio.</p>
                     <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-shield-alt"></i>
+                        <i class="fas fa-headset"></i>
                     </div>
-                    <h3>Ciberseguridad</h3>
-                    <p>Protección integral de sistemas y datos contra amenazas digitales, con auditorías, monitoreo y planes de respuesta a incidentes.</p>
-                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3>Inteligencia Artificial</h3>
-                    <p>Implementación de soluciones de IA y machine learning para automatizar procesos, analizar datos y tomar decisiones inteligentes.</p>
-                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Análisis de Datos</h3>
-                    <p>Transformación de datos brutos en información valiosa para la toma de decisiones estratégicas mediante visualizaciones y dashboards.</p>
-                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-link"></i>
-                    </div>
-                    <h3>Integración de Sistemas</h3>
-                    <p>Conexión de plataformas y aplicaciones existentes para crear flujos de trabajo eficientes y sin interrupciones.</p>
-                    <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Consultoría Tecnológica</h3>
-                    <p>Asesoramiento experto para la transformación digital, selección de tecnologías y optimización de procesos empresariales.</p>
+                    <h3>Soporte Técnico 24/7</h3>
+                    <p>Asistencia técnica permanente para resolver cualquier incidencia y mantener tus sistemas operativos.</p>
                     <a href="#" class="service-link">Más información <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
@@ -1340,14 +2013,30 @@
             <div class="courses-grid">
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="https://picsum.photos/seed/course1/400/300.jpg" alt="Curso 1">
+                        <img src="https://picsum.photos/seed/course-hardware/400/300.jpg" alt="Curso Hardware">
                         <span class="course-badge">Popular</span>
                     </div>
                     <div class="course-content">
-                        <h3>Desarrollo Full Stack</h3>
-                        <p>Aprende a crear aplicaciones web completas desde el frontend hasta el backend con las tecnologías más demandadas.</p>
+                        <h3>Técnico en Hardware</h3>
+                        <p>Aprende a diagnosticar, reparar y mantener componentes físicos de computadoras y servidores.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 12 semanas</span>
+                            <span class="course-duration"><i class="far fa-clock"></i> 8 semanas</span>
+                            <span class="course-level"><i class="fas fa-signal"></i> Básico</span>
+                        </div>
+                        <div class="course-price">$199</div>
+                        <a href="#" class="course-btn">Inscribirse</a>
+                    </div>
+                </div>
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://picsum.photos/seed/course-networking/400/300.jpg" alt="Curso Redes">
+                        <span class="course-badge">Nuevo</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Administración de Redes</h3>
+                        <p>Domina la configuración y gestión de redes empresariales con protocolos modernos.</p>
+                        <div class="course-meta">
+                            <span class="course-duration"><i class="far fa-clock"></i> 10 semanas</span>
                             <span class="course-level"><i class="fas fa-signal"></i> Intermedio</span>
                         </div>
                         <div class="course-price">$299</div>
@@ -1356,14 +2045,13 @@
                 </div>
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="https://picsum.photos/seed/course2/400/300.jpg" alt="Curso 2">
-                        <span class="course-badge">Nuevo</span>
+                        <img src="https://picsum.photos/seed/course-security/400/300.jpg" alt="Curso Seguridad">
                     </div>
                     <div class="course-content">
-                        <h3>Inteligencia Artificial Aplicada</h3>
-                        <p>Domina los fundamentos de la IA y el machine learning para crear soluciones inteligentes en diversos sectores.</p>
+                        <h3>Seguridad Informática</h3>
+                        <p>Protege sistemas y datos contra amenazas digitales con las mejores prácticas del sector.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 10 semanas</span>
+                            <span class="course-duration"><i class="far fa-clock"></i> 12 semanas</span>
                             <span class="course-level"><i class="fas fa-signal"></i> Avanzado</span>
                         </div>
                         <div class="course-price">$399</div>
@@ -1372,13 +2060,13 @@
                 </div>
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="https://picsum.photos/seed/course3/400/300.jpg" alt="Curso 3">
+                        <img src="https://picsum.photos/seed/course-server/400/300.jpg" alt="Curso Servidores">
                     </div>
                     <div class="course-content">
-                        <h3>Ciberseguridad Profesional</h3>
-                        <p>Adquiere las habilidades para proteger sistemas y datos contra amenazas digitales y obtener certificaciones reconocidas.</p>
+                        <h3>Administración de Servidores</h3>
+                        <p>Gestiona servidores Windows y Linux en entornos empresariales de alto rendimiento.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 8 semanas</span>
+                            <span class="course-duration"><i class="far fa-clock"></i> 10 semanas</span>
                             <span class="course-level"><i class="fas fa-signal"></i> Intermedio</span>
                         </div>
                         <div class="course-price">$349</div>
@@ -1387,29 +2075,14 @@
                 </div>
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="https://picsum.photos/seed/course4/400/300.jpg" alt="Curso 4">
-                    </div>
-                    <div class="course-content">
-                        <h3>Cloud Computing con AWS</h3>
-                        <p>Aprende a diseñar, implementar y gestionar infraestructura en la nube con Amazon Web Services.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 6 semanas</span>
-                            <span class="course-level"><i class="fas fa-signal"></i> Principiante</span>
-                        </div>
-                        <div class="course-price">$249</div>
-                        <a href="#" class="course-btn">Inscribirse</a>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <div class="course-image">
-                        <img src="https://picsum.photos/seed/course5/400/300.jpg" alt="Curso 5">
+                        <img src="https://picsum.photos/seed/course-cloud/400/300.jpg" alt="Curso Cloud">
                         <span class="course-badge">Popular</span>
                     </div>
                     <div class="course-content">
-                        <h3>Desarrollo de Apps Móviles</h3>
-                        <p>Crea aplicaciones nativas para iOS y Android utilizando los frameworks más populares del mercado.</p>
+                        <h3>Computación en la Nube</h3>
+                        <p>Implementa soluciones cloud con AWS, Azure y Google Cloud Platform.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 10 semanas</span>
+                            <span class="course-duration"><i class="far fa-clock"></i> 8 semanas</span>
                             <span class="course-level"><i class="fas fa-signal"></i> Intermedio</span>
                         </div>
                         <div class="course-price">$329</div>
@@ -1418,47 +2091,47 @@
                 </div>
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="https://picsum.photos/seed/course6/400/300.jpg" alt="Curso 6">
+                        <img src="https://picsum.photos/seed/course-datarecovery/400/300.jpg" alt="Curso Recuperación">
                     </div>
                     <div class="course-content">
-                        <h3>Data Science y Analytics</h3>
-                        <p>Transforma datos en insights valiosos utilizando herramientas de análisis y visualización de datos.</p>
+                        <h3>Recuperación de Datos</h3>
+                        <p>Técnicas avanzadas para recuperar información de dispositivos dañados o formateados.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 12 semanas</span>
-                            <span class="course-level"><i class="fas fa-signal"></i> Intermedio</span>
-                        </div>
-                        <div class="course-price">$379</div>
-                        <a href="#" class="course-btn">Inscribirse</a>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <div class="course-image">
-                        <img src="https://picsum.photos/seed/course7/400/300.jpg" alt="Curso 7">
-                    </div>
-                    <div class="course-content">
-                        <h3>Blockchain y Criptomonedas</h3>
-                        <p>Comprende la tecnología detrás de las criptomonedas y aprende a desarrollar aplicaciones descentralizadas.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 8 semanas</span>
+                            <span class="course-duration"><i class="far fa-clock"></i> 6 semanas</span>
                             <span class="course-level"><i class="fas fa-signal"></i> Avanzado</span>
                         </div>
-                        <div class="course-price">$429</div>
+                        <div class="course-price">$279</div>
                         <a href="#" class="course-btn">Inscribirse</a>
                     </div>
                 </div>
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="https://picsum.photos/seed/course8/400/300.jpg" alt="Curso 8">
+                        <img src="https://picsum.photos/seed/course-mobile/400/300.jpg" alt="Curso Móviles">
+                    </div>
+                    <div class="course-content">
+                        <h3>Reparación de Dispositivos Móviles</h3>
+                        <p>Aprende a reparar smartphones y tablets con herramientas y técnicas profesionales.</p>
+                        <div class="course-meta">
+                            <span class="course-duration"><i class="far fa-clock"></i> 8 semanas</span>
+                            <span class="course-level"><i class="fas fa-signal"></i> Básico</span>
+                        </div>
+                        <div class="course-price">$249</div>
+                        <a href="#" class="course-btn">Inscribirse</a>
+                    </div>
+                </div>
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://picsum.photos/seed/course-it-support/400/300.jpg" alt="Curso Soporte">
                         <span class="course-badge">Nuevo</span>
                     </div>
                     <div class="course-content">
-                        <h3>DevOps y Automatización</h3>
-                        <p>Optimiza el ciclo de vida del desarrollo de software con prácticas DevOps y herramientas de automatización.</p>
+                        <h3>Soporte IT Empresarial</h3>
+                        <p>Conviértete en experto en soporte técnico para empresas y organizaciones.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="far fa-clock"></i> 6 semanas</span>
+                            <span class="course-duration"><i class="far fa-clock"></i> 10 semanas</span>
                             <span class="course-level"><i class="fas fa-signal"></i> Intermedio</span>
                         </div>
-                        <div class="course-price">$279</div>
+                        <div class="course-price">$259</div>
                         <a href="#" class="course-btn">Inscribirse</a>
                     </div>
                 </div>
@@ -1480,7 +2153,7 @@
                     <i class="fas fa-microchip"></i> Piezas
                 </button>
                 <button class="tab-btn" data-tab="desarrollos">
-                    <i class="fas fa-code"></i> Desarrollos
+                    <i class="fas fa-code"></i> Software
                 </button>
             </div>
 
@@ -1489,93 +2162,93 @@
                 <div class="products-grid">
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo1/400/300.jpg" alt="Servidor Enterprise">
+                            <img src="https://picsum.photos/seed/laptop-pro/400/300.jpg" alt="Laptop Pro">
                             <span class="product-badge">Bestseller</span>
                         </div>
                         <div class="product-content">
-                            <h3>Servidor Enterprise Pro</h3>
-                            <p>Servidor de alto rendimiento para empresas con procesadores de última generación y capacidad de expansión modular.</p>
-                            <div class="product-price">$3,299</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Laptop Business Pro</h3>
+                            <p>Portátil de alto rendimiento para profesionales con procesador Intel i7, 16GB RAM y SSD de 512GB.</p>
+                            <div class="product-price">$1,299</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Laptop Business Pro', 1299)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo2/400/300.jpg" alt="Workstation">
+                            <img src="https://picsum.photos/seed/desktop-gaming/400/300.jpg" alt="Desktop Gaming">
                         </div>
                         <div class="product-content">
-                            <h3>Workstation Ultra</h3>
-                            <p>Estación de trabajo potente para diseño 3D, renderizado y análisis de datos complejos.</p>
-                            <div class="product-price">$2,499</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Desktop Gaming Elite</h3>
+                            <p>PC de escritorio para gaming con RTX 4070, Intel i9, 32GB RAM y refrigeración líquida.</p>
+                            <div class="product-price">$2,199</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Desktop Gaming Elite', 2199)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo3/400/300.jpg" alt="Router Mesh">
+                            <img src="https://picsum.photos/seed/server-rack/400/300.jpg" alt="Servidor Rack">
                             <span class="product-badge">Nuevo</span>
                         </div>
                         <div class="product-content">
-                            <h3>Router Mesh System</h3>
-                            <p>Sistema de red mesh para cobertura WiFi completa en grandes espacios con gestión centralizada.</p>
-                            <div class="product-price">$499</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Servidor Rack Enterprise</h3>
+                            <p>Servidor de rack para empresas con Xeon, 64GB RAM, RAID 5 y gestión remota.</p>
+                            <div class="product-price">$3,499</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Servidor Rack Enterprise', 3499)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo4/400/300.jpg" alt="Laptop Pro">
+                            <img src="https://picsum.photos/seed/workstation-pro/400/300.jpg" alt="Workstation">
                         </div>
                         <div class="product-content">
-                            <h3>Laptop Pro Max</h3>
-                            <p>Portátil de alta gama con procesador Intel i9, 32GB RAM y tarjeta gráfica RTX 4080.</p>
-                            <div class="product-price">$2,899</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Workstation Creative</h3>
+                            <p>Estación de trabajo para diseño 3D y video con Quadro RTX, Threadripper y 128GB RAM.</p>
+                            <div class="product-price">$4,999</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Workstation Creative', 4999)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo5/400/300.jpg" alt="NAS Storage">
+                            <img src="https://picsum.photos/seed/all-in-one/400/300.jpg" alt="All in One">
                             <span class="product-badge">Popular</span>
                         </div>
                         <div class="product-content">
-                            <h3>NAS Storage Pro</h3>
-                            <p>Sistema de almacenamiento en red con capacidad de 48TB y RAID configurables.</p>
-                            <div class="product-price">$1,799</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>All-in-One Business</h3>
+                            <p>Computadora todo en uno con pantalla 4K táctil, Intel i7, 16GB RAM y diseño elegante.</p>
+                            <div class="product-price">$1,599</div>
+                            <button class="product-btn" onclick="openPurchaseModal('All-in-One Business', 1599)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo6/400/300.jpg" alt="Monitor 4K">
+                            <img src="https://picsum.photos/seed/mini-pc/400/300.jpg" alt="Mini PC">
                         </div>
                         <div class="product-content">
-                            <h3>Monitor 4K Pro</h3>
-                            <p>Monitor profesional de 32 pulgadas 4K HDR con calibración de color precisa.</p>
+                            <h3>Mini PC Pro</h3>
+                            <p>Computadora compacta con Intel i5, 8GB RAM, 256GB SSD, ideal para espacios reducidos.</p>
+                            <div class="product-price">$499</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Mini PC Pro', 499)">Comprar ahora</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://picsum.photos/seed/monitor-4k/400/300.jpg" alt="Monitor 4K">
+                        </div>
+                        <div class="product-content">
+                            <h3>Monitor 4K Professional</h3>
+                            <p>Monitor profesional de 32 pulgadas 4K HDR con calibración de color precisa para diseño.</p>
                             <div class="product-price">$899</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <button class="product-btn" onclick="openPurchaseModal('Monitor 4K Professional', 899)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo7/400/300.jpg" alt="Switch Network">
+                            <img src="https://picsum.photos/seed/nas-storage/400/300.jpg" alt="NAS Storage">
                         </div>
                         <div class="product-content">
-                            <h3>Switch Network 48G</h3>
-                            <p>Switch gestionado de 48 puertos Gigabit con PoE+ para redes empresariales.</p>
+                            <h3>NAS Storage Pro</h3>
+                            <p>Sistema de almacenamiento en red con 4 bahías, 16TB RAID y gestión remota.</p>
                             <div class="product-price">$1,299</div>
-                            <button class="product-btn">Comprar ahora</button>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://picsum.photos/seed/equipo8/400/300.jpg" alt="UPS System">
-                        </div>
-                        <div class="product-content">
-                            <h3>UPS System Pro</h3>
-                            <p>Sistema de alimentación ininterrumpida de 10KVA con autonomía de 8 horas.</p>
-                            <div class="product-price">$2,199</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <button class="product-btn" onclick="openPurchaseModal('NAS Storage Pro', 1299)">Comprar ahora</button>
                         </div>
                     </div>
                 </div>
@@ -1585,93 +2258,93 @@
                 <div class="products-grid">
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza1/400/300.jpg" alt="Procesador">
+                            <img src="https://picsum.photos/seed/cpu-intel/400/300.jpg" alt="Procesador Intel">
                             <span class="product-badge">Top</span>
                         </div>
                         <div class="product-content">
-                            <h3>Procesador Quantum X</h3>
-                            <p>Procesador de 16 núcleos con tecnología de enfriamiento líquida integrada para máximo rendimiento.</p>
-                            <div class="product-price">$899</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Intel Core i9-13900K</h3>
+                            <p>Procesador de 24 núcleos, 5.8GHz, desbloqueado para overclocking extremo.</p>
+                            <div class="product-price">$649</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Intel Core i9-13900K', 649)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza2/400/300.jpg" alt="Tarjeta Gráfica">
+                            <img src="https://picsum.photos/seed/gpu-rtx/400/300.jpg" alt="Tarjeta Gráfica">
                         </div>
                         <div class="product-content">
-                            <h3>Tarjeta Gráfica Titan</h3>
-                            <p>GPU de última generación con 24GB VRAM para gaming 4K y aplicaciones de IA.</p>
-                            <div class="product-price">$1,299</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>NVIDIA RTX 4080</h3>
+                            <p>Tarjeta gráfica con 16GB VRAM, ray tracing y DLSS 3 para gaming 4K.</p>
+                            <div class="product-price">$1,199</div>
+                            <button class="product-btn" onclick="openPurchaseModal('NVIDIA RTX 4080', 1199)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza3/400/300.jpg" alt="SSD NVMe">
+                            <img src="https://picsum.photos/seed/ram-ddr5/400/300.jpg" alt="Memoria RAM">
                             <span class="product-badge">Popular</span>
                         </div>
                         <div class="product-content">
-                            <h3>SSD NVMe 2TB</h3>
-                            <p>Almacenamiento ultrarrápido con velocidades de lectura hasta 7,000 MB/s.</p>
-                            <div class="product-price">$299</div>
-                            <button class="product-btn">Comprar ahora</button>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza4/400/300.jpg" alt="Memoria RAM">
-                        </div>
-                        <div class="product-content">
                             <h3>Memoria RAM DDR5 32GB</h3>
-                            <p>Kit de memoria RAM DDR5 de 32GB (2x16GB) con velocidad de 6000MHz.</p>
-                            <div class="product-price">$249</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <p>Kit de 32GB (2x16GB) DDR5 6000MHz CL30 con disipadores RGB.</p>
+                            <div class="product-price">$189</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Memoria RAM DDR5 32GB', 189)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza5/400/300.jpg" alt="Placa Base">
+                            <img src="https://picsum.photos/seed/ssd-nvme/400/300.jpg" alt="SSD NVMe">
                         </div>
                         <div class="product-content">
-                            <h3>Placa Base Z790 Pro</h3>
-                            <p>Placa base premium con soporte para procesadores Intel 13ª gen y WiFi 6E integrado.</p>
-                            <div class="product-price">$449</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>SSD NVMe 2TB Gen4</h3>
+                            <p>Almacenamiento ultrarrápido con velocidades de 7,000 MB/s y caché DRAM.</p>
+                            <div class="product-price">$149</div>
+                            <button class="product-btn" onclick="openPurchaseModal('SSD NVMe 2TB Gen4', 149)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza6/400/300.jpg" alt="Fuente Poder">
+                            <img src="https://picsum.photos/seed/motherboard-z790/400/300.jpg" alt="Placa Base">
+                        </div>
+                        <div class="product-content">
+                            <h3>Placa Base Z790 WiFi</h3>
+                            <p>Placa base premium con soporte Intel 13ª gen, WiFi 6E y 4 ranuras M.2.</p>
+                            <div class="product-price">$399</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Placa Base Z790 WiFi', 399)">Comprar ahora</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://picsum.photos/seed/psu-1200w/400/300.jpg" alt="Fuente Poder">
                             <span class="product-badge">Nuevo</span>
                         </div>
                         <div class="product-content">
                             <h3>Fuente Poder 1200W</h3>
-                            <p>Fuente de alimentación modular 80 Plus Platinum de 1200W con certificación RGB.</p>
-                            <div class="product-price">$329</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <p>Fuente modular 80 Plus Platinum con certificación ATX 3.0 y 10 años garantía.</p>
+                            <div class="product-price">$299</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Fuente Poder 1200W', 299)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza7/400/300.jpg" alt="Refrigeración">
+                            <img src="https://picsum.photos/seed/liquid-cooling/400/300.jpg" alt="Refrigeración">
                         </div>
                         <div class="product-content">
-                            <h3>Refrigeración Líquida AIO</h3>
-                            <p>Sistema de refrigeración líquida todo en uno de 360mm con control RGB.</p>
-                            <div class="product-price">$199</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Refrigeración Líquida 360mm</h3>
+                            <p>Sistema AIO con radiador 360mm, tres ventiladores RGB y bloque CPU de cobre.</p>
+                            <div class="product-price">$179</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Refrigeración Líquida 360mm', 179)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/pieza8/400/300.jpg" alt="Gabinete">
+                            <img src="https://picsum.photos/seed/pc-case/400/300.jpg" alt="Gabinete">
                         </div>
                         <div class="product-content">
-                            <h3>Gabinete Gaming Pro</h3>
-                            <p>Chasis torre media con panel de cristal templado y excelente flujo de aire.</p>
-                            <div class="product-price">$149</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Gabinete Gaming Tower</h3>
+                            <p>Chasis torre media con panel cristal, 4 ventiladores ARGB y excelente flujo de aire.</p>
+                            <div class="product-price">$129</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Gabinete Gaming Tower', 129)">Comprar ahora</button>
                         </div>
                     </div>
                 </div>
@@ -1681,99 +2354,192 @@
                 <div class="products-grid">
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo1/400/300.jpg" alt="ERP">
+                            <img src="https://picsum.photos/seed/antivirus-pro/400/300.jpg" alt="Antivirus Pro">
                             <span class="product-badge">Premium</span>
                         </div>
                         <div class="product-content">
-                            <h3>Sistema ERP Empresarial</h3>
-                            <p>Solución integral para la gestión de recursos empresariales con módulos personalizables según tus necesidades.</p>
-                            <div class="product-price">$1,299</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Antivirus Enterprise Pro</h3>
+                            <p>Protección completa para empresas con firewall, ransomware protection y gestión centralizada.</p>
+                            <div class="product-price">$299</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Antivirus Enterprise Pro', 299)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo2/400/300.jpg" alt="CRM">
+                            <img src="https://picsum.photos/seed/backup-software/400/300.jpg" alt="Backup Software">
                         </div>
                         <div class="product-content">
-                            <h3>CRM Avanzado</h3>
-                            <p>Plataforma para la gestión de relaciones con clientes, con análisis predictivo y automatización de marketing.</p>
-                            <div class="product-price">$899</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Backup Solution Pro</h3>
+                            <p>Software de respaldo automático con encriptación, compresión y almacenamiento en la nube.</p>
+                            <div class="product-price">$199</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Backup Solution Pro', 199)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo3/400/300.jpg" alt="Analytics">
+                            <img src="https://picsum.photos/seed/remote-desktop/400/300.jpg" alt="Remote Desktop">
                             <span class="product-badge">Nuevo</span>
                         </div>
                         <div class="product-content">
-                            <h3>Analytics Suite Pro</h3>
-                            <p>Herramienta completa para el análisis de datos y visualización de métricas empresariales en tiempo real.</p>
-                            <div class="product-price">$699</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Remote Desktop Manager</h3>
+                            <p>Gestiona conexiones remotas seguras con cifrado de extremo a extremo y multiplataforma.</p>
+                            <div class="product-price">$149</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Remote Desktop Manager', 149)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo4/400/300.jpg" alt="Security">
+                            <img src="https://picsum.photos/seed/system-optimizer/400/300.jpg" alt="System Optimizer">
                         </div>
                         <div class="product-content">
-                            <h3>Security Shield</h3>
-                            <p>Sistema de protección integral contra ciberataques con monitoreo 24/7 y respuesta automática a amenazas.</p>
-                            <div class="product-price">$1,199</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>System Optimizer Pro</h3>
+                            <p>Optimiza el rendimiento del sistema con limpieza de registro, desfragmentación y tune-up.</p>
+                            <div class="product-price">$79</div>
+                            <button class="product-btn" onclick="openPurchaseModal('System Optimizer Pro', 79)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo5/400/300.jpg" alt="Cloud Manager">
+                            <img src="https://picsum.photos/seed/data-recovery/400/300.jpg" alt="Data Recovery">
                         </div>
                         <div class="product-content">
-                            <h3>Cloud Manager</h3>
-                            <p>Plataforma para la gestión centralizada de recursos en múltiples nubes con optimización de costos.</p>
-                            <div class="product-price">$799</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Data Recovery Wizard</h3>
+                            <p>Software profesional para recuperar archivos eliminados, formateados o de particiones dañadas.</p>
+                            <div class="product-price">$99</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Data Recovery Wizard', 99)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo6/400/300.jpg" alt="AI Assistant">
+                            <img src="https://picsum.photos/seed/network-monitor/400/300.jpg" alt="Network Monitor">
                             <span class="product-badge">Popular</span>
                         </div>
                         <div class="product-content">
-                            <h3>AI Assistant</h3>
-                            <p>Asistente virtual inteligente con procesamiento de lenguaje natural para automatizar tareas y consultas.</p>
-                            <div class="product-price">$599</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Network Monitor Pro</h3>
+                            <p>Monitorea el tráfico de red en tiempo real con alertas y análisis detallado.</p>
+                            <div class="product-price">$249</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Network Monitor Pro', 249)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo7/400/300.jpg" alt="E-commerce">
+                            <img src="https://picsum.photos/seed/driver-updater/400/300.jpg" alt="Driver Updater">
                         </div>
                         <div class="product-content">
-                            <h3>E-commerce Platform</h3>
-                            <p>Solución completa para crear y gestionar tiendas online con pasarelas de pago integradas y análisis de ventas.</p>
-                            <div class="product-price">$999</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Driver Updater Pro</h3>
+                            <p>Mantiene todos los controladores actualizados automáticamente con backup y restauración.</p>
+                            <div class="product-price">$59</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Driver Updater Pro', 59)">Comprar ahora</button>
                         </div>
                     </div>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="https://picsum.photos/seed/desarrollo8/400/300.jpg" alt="Project Hub">
+                            <img src="https://picsum.photos/seed/disk-manager/400/300.jpg" alt="Disk Manager">
                         </div>
                         <div class="product-content">
-                            <h3>Project Hub</h3>
-                            <p>Plataforma colaborativa para la gestión de proyectos con seguimiento de tareas, recursos y plazos.</p>
-                            <div class="product-price">$499</div>
-                            <button class="product-btn">Comprar ahora</button>
+                            <h3>Disk Partition Manager</h3>
+                            <p>Gestiona particiones de disco con redimensionamiento, clonación y conversión.</p>
+                            <div class="product-price">$69</div>
+                            <button class="product-btn" onclick="openPurchaseModal('Disk Partition Manager', 69)">Comprar ahora</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Modal de compra -->
+    <div class="purchase-modal" id="purchaseModal">
+        <div class="purchase-container">
+            <div class="purchase-header">
+                <h2>Completar Compra</h2>
+                <button class="purchase-close" onclick="closePurchaseModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="purchase-body">
+                <div class="product-summary">
+                    <h3 id="productName">Producto</h3>
+                    <div class="price" id="productPrice">$0</div>
+                </div>
+
+                <form id="purchaseForm">
+                    <div class="form-group">
+                        <label for="customerName">Nombre Completo</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerEmail">Email</label>
+                        <input type="email" id="customerEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerPhone">Teléfono</label>
+                        <input type="tel" id="customerPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerAddress">Dirección de Entrega</label>
+                        <textarea id="customerAddress" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <div class="quantity-control">
+                            <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" readonly>
+                            <button type="button" class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Método de Entrega</label>
+                        <div class="delivery-options">
+                            <div class="delivery-option" onclick="selectDelivery('domicilio')">
+                                <i class="fas fa-truck"></i>
+                                <span>Domicilio</span>
+                            </div>
+                            <div class="delivery-option" onclick="selectDelivery('tienda')">
+                                <i class="fas fa-store"></i>
+                                <span>Recoger en Tienda</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentMethod">Método de Pago</label>
+                        <select id="paymentMethod" required>
+                            <option value="">Seleccionar método</option>
+                            <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                            <option value="transferencia">Transferencia Bancaria</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="efectivo">Efectivo (solo tienda)</option>
+                        </select>
+                    </div>
+
+                    <div class="purchase-total">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0</span>
+                        </div>
+                        <div class="total-row" id="deliveryRow" style="display: none;">
+                            <span>Costo Domicilio:</span>
+                            <span id="deliveryCost">$0</span>
+                        </div>
+                        <div class="total-row final">
+                            <span>Total:</span>
+                            <span id="total">$0</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-purchase">
+                        <i class="fas fa-lock"></i> Comprar Seguro
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Sección de contacto -->
     <section id="contact" class="contact-section">
@@ -1805,7 +2571,7 @@
                         </div>
                         <div class="contact-details">
                             <h3>Email</h3>
-                            <p>info@nodos.tech</p>
+                            <p>info@noda.tech</p>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -1814,11 +2580,12 @@
                         </div>
                         <div class="contact-details">
                             <h3>Horario</h3>
-                            <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
+                            <p>Lunes a Viernes: 9:00 AM - 6:00 PM<br>Sábados: 10:00 AM - 2:00 PM</p>
                         </div>
                     </div>
                 </div>
                 <div class="contact-form">
+                    <h3>Envíanos un Mensaje</h3>
                     <form id="contactForm">
                         <div class="form-group">
                             <label for="name">Nombre</label>
@@ -1834,9 +2601,11 @@
                         </div>
                         <div class="form-group">
                             <label for="message">Mensaje</label>
-                            <textarea id="message" name="message" required></textarea>
+                            <textarea id="message" name="message" rows="5" required></textarea>
                         </div>
-                        <button type="submit" class="submit-btn">Enviar mensaje</button>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Enviar Mensaje
+                        </button>
                     </form>
                 </div>
             </div>
@@ -1848,8 +2617,8 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3>Sobre Nodos</h3>
-                    <p>Somos una empresa tecnológica dedicada a crear soluciones innovadoras que transforman la forma en que las empresas operan y crecen en el mundo digital.</p>
+                    <h3>Sobre Noda</h3>
+                    <p>Somos una empresa tecnológica líder especializada en mantenimiento, reparación e instalación de equipos tecnológicos. Con más de 10 años de experiencia, ofrecemos soluciones integrales para particulares y empresas.</p>
                     <div class="footer-social">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -1858,7 +2627,7 @@
                     </div>
                 </div>
                 <div class="footer-column">
-                    <h3>Enlaces rápidos</h3>
+                    <h3>Enlaces Rápidos</h3>
                     <ul class="footer-links">
                         <li><a href="#home"><i class="fas fa-chevron-right"></i> Inicio</a></li>
                         <li><a href="#services"><i class="fas fa-chevron-right"></i> Servicios</a></li>
@@ -1868,28 +2637,25 @@
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3>Servicios</h3>
+                    <h3>Servicios Destacados</h3>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Desarrollo a Medida</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Aplicaciones Móviles</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Soluciones Cloud</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Ciberseguridad</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Inteligencia Artificial</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Mantenimiento Preventivo</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Reparación de Equipos</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Instalación de Redes</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Soporte Técnico 24/7</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Recuperación de Datos</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3>Newsletter</h3>
-                    <p>Suscríbete para recibir las últimas noticias y ofertas especiales.</p>
-                    <form id="newsletterForm">
-                        <div class="form-group">
-                            <input type="email" placeholder="Tu email" required>
-                        </div>
-                        <button type="submit" class="submit-btn">Suscribirse</button>
-                    </form>
+                    <h3>Contacto</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Av. Tecnología 1234</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@noda.tech</p>
+                    <p><i class="fas fa-clock"></i> Lun-Vie: 9:00 AM - 6:00 PM</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 Nodos - Todos los derechos reservados</p>
+                <p>&copy; 2023 Noda - Todos los derechos reservados | Desarrollado con <i class="fas fa-heart" style="color: var(--accent-color);"></i> por Noda Tech</p>
             </div>
         </div>
     </footer>
@@ -1900,29 +2666,32 @@
             <i class="fas fa-share-alt"></i>
         </div>
         <div class="social-links">
-            <a href="#"><i class="fab fa-facebook-f"></i> Facebook</a>
-            <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
-            <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-            <a href="#"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-            <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
-            <a href="#"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+            <a href="https://youtube.com" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+            <a href="https://github.com" target="_blank"><i class="fab fa-github"></i> GitHub</a>
         </div>
     </div>
 
-    <!-- Chatbot -->
+    <!-- Chatbot mejorado -->
     <div class="chatbot">
         <div class="chatbot-toggle" id="chatbotToggle">
             <i class="fas fa-comments"></i>
         </div>
         <div class="chatbot-container" id="chatbotContainer">
             <div class="chatbot-header">
-                <h3>Asistente Virtual</h3>
+                <h3>
+                    <i class="fas fa-robot"></i> Asistente Noda
+                    <span class="status-indicator"></span>
+                </h3>
                 <button class="chatbot-close" id="chatbotClose">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="chatbot-messages" id="chatbotMessages">
-                <div class="message bot">¡Hola! Soy el asistente virtual de Nodos. ¿En qué puedo ayudarte hoy?</div>
+                <div class="message bot">¡Hola! Soy el asistente virtual de Noda. ¿En qué puedo ayudarte hoy?</div>
             </div>
             <div class="chatbot-input">
                 <input type="text" id="chatbotInput" placeholder="Escribe tu mensaje...">
@@ -1933,7 +2702,94 @@
         </div>
     </div>
 
+    <!-- Modal de login de administrador -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-container">
+            <div class="admin-header">
+                <h2><i class="fas fa-user-shield"></i> Panel Administrador</h2>
+            </div>
+            <div class="admin-body">
+                <form class="admin-form" id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminUsername">Usuario</label>
+                        <input type="text" id="adminUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Contraseña</label>
+                        <input type="password" id="adminPassword" required>
+                    </div>
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de administrador -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-panel-header">
+            <h3><i class="fas fa-cog"></i> Panel de Control</h3>
+            <button class="admin-panel-close" onclick="closeAdminPanel()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="admin-panel-body">
+            <div class="admin-section">
+                <h3>Configuración General</h3>
+                <div class="form-group">
+                    <label>Nombre de la Empresa</label>
+                    <input type="text" class="editable" id="companyName" value="Noda">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" class="editable" id="companyPhone" value="+1 (555) 123-4567">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="editable" id="companyEmail" value="info@noda.tech">
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Precios de Domicilio</h3>
+                <div class="form-group">
+                    <label>Costo Domicilio Normal ($)</label>
+                    <input type="number" class="price-input" id="normalDelivery" value="50">
+                </div>
+                <div class="form-group">
+                    <label>Costo Domicilio Express ($)</label>
+                    <input type="number" class="price-input" id="expressDelivery" value="100">
+                </div>
+                <div class="form-group">
+                    <label>Costo Domicilio Fuera de Ciudad ($)</label>
+                    <input type="number" class="price-input" id="outOfTownDelivery" value="150">
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Gestión de Productos</h3>
+                <button class="save-btn" onclick="saveAdminChanges()">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificaciones -->
+    <div class="notification" id="notification">
+        <div class="notification-title" id="notificationTitle">Título</div>
+        <div class="notification-message" id="notificationMessage">Mensaje</div>
+    </div>
+
     <script>
+        // Variables globales
+        let currentProduct = null;
+        let currentPrice = 0;
+        let deliveryType = null;
+        let deliveryCost = 0;
+        let isAdminLoggedIn = false;
+
         // Carrusel automático con zoom
         const slides = document.querySelectorAll('.carousel-slide');
         let currentSlide = 0;
@@ -1945,7 +2801,7 @@
         }
         
         setInterval(nextSlide, 5000);
-        
+
         // Navegación con scroll
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
@@ -1955,7 +2811,7 @@
                 navbar.classList.remove('scrolled');
             }
         });
-        
+
         // Smooth scrolling para enlaces de navegación
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
@@ -1972,7 +2828,7 @@
                 }
             });
         });
-        
+
         // Galería con modal
         const galleryItems = document.querySelectorAll('.gallery-item');
         const imageModal = document.getElementById('imageModal');
@@ -1996,26 +2852,24 @@
                 imageModal.classList.remove('active');
             }
         });
-        
-        // Menú lateral de redes sociales
+
+        // Menú lateral de redes sociales - CORREGIDO
         const socialMenu = document.getElementById('socialMenu');
         const socialToggle = document.getElementById('socialToggle');
         
-        socialToggle.addEventListener('click', function() {
+        socialToggle.addEventListener('click', function(e) {
+            e.preventDefault();
             socialMenu.classList.toggle('active');
         });
-        
-        // Sistema de pestañas para productos - MEJORADO
+
+        // Sistema de pestañas para productos
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
         
-        // Función para cambiar de pestaña
         function switchTab(tabId) {
-            // Remover clase active de todos los botones y contenidos
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
             
-            // Encontrar y activar el botón y contenido correspondientes
             const targetButton = document.querySelector(`[data-tab="${tabId}"]`);
             const targetContent = document.getElementById(tabId);
             
@@ -2023,7 +2877,6 @@
                 targetButton.classList.add('active');
                 targetContent.classList.add('active');
                 
-                // Animación de entrada para los productos
                 const productCards = targetContent.querySelectorAll('.product-card');
                 productCards.forEach((card, index) => {
                     card.style.opacity = '0';
@@ -2037,15 +2890,96 @@
             }
         }
         
-        // Event listeners para los botones de pestaña
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
                 switchTab(tabId);
             });
         });
-        
-        // Chatbot
+
+        // Modal de compra
+        function openPurchaseModal(productName, price) {
+            currentProduct = productName;
+            currentPrice = price;
+            document.getElementById('productName').textContent = productName;
+            document.getElementById('productPrice').textContent = `$${price}`;
+            document.getElementById('purchaseModal').classList.add('active');
+            updateTotal();
+        }
+
+        function closePurchaseModal() {
+            document.getElementById('purchaseModal').classList.remove('active');
+            document.getElementById('purchaseForm').reset();
+            deliveryType = null;
+            deliveryCost = 0;
+            document.querySelectorAll('.delivery-option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('deliveryRow').style.display = 'none';
+        }
+
+        function changeQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            let newQuantity = parseInt(quantityInput.value) + change;
+            if (newQuantity < 1) newQuantity = 1;
+            quantityInput.value = newQuantity;
+            updateTotal();
+        }
+
+        function selectDelivery(type) {
+            deliveryType = type;
+            document.querySelectorAll('.delivery-option').forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.delivery-option').classList.add('selected');
+            
+            if (type === 'domicilio') {
+                document.getElementById('deliveryRow').style.display = 'flex';
+                // Obtener costo de domicilio desde la configuración
+                const normalDelivery = parseFloat(document.getElementById('normalDelivery')?.value || 50);
+                deliveryCost = normalDelivery;
+                showNotification('info', 'Domicilio', `El costo de domicilio es de $${deliveryCost}. Entrega en 24-48 horas.`);
+            } else {
+                document.getElementById('deliveryRow').style.display = 'none';
+                deliveryCost = 0;
+                showNotification('info', 'Recoger en Tienda', 'Podrás pasar a recoger tu producto en nuestra tienda en 2-4 horas.');
+            }
+            updateTotal();
+        }
+
+        function updateTotal() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const subtotal = currentPrice * quantity;
+            const total = subtotal + deliveryCost;
+            
+            document.getElementById('subtotal').textContent = `$${subtotal}`;
+            document.getElementById('deliveryCost').textContent = `$${deliveryCost}`;
+            document.getElementById('total').textContent = `$${total}`;
+        }
+
+        // Formulario de compra
+        document.getElementById('purchaseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const purchaseData = {
+                product: currentProduct,
+                price: currentPrice,
+                quantity: document.getElementById('quantity').value,
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                customerAddress: document.getElementById('customerAddress').value,
+                deliveryType: deliveryType,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                total: document.getElementById('total').textContent
+            };
+            
+            // Guardar en localStorage (simulación de base de datos)
+            let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+            purchases.push({...purchaseData, id: Date.now(), date: new Date().toISOString()});
+            localStorage.setItem('purchases', JSON.stringify(purchases));
+            
+            showNotification('success', '¡Compra Exitosa!', `Tu orden #${Date.now()} ha sido procesada. Te contactaremos pronto.`);
+            closePurchaseModal();
+        });
+
+        // Chatbot mejorado con IA simulada
         const chatbotToggle = document.getElementById('chatbotToggle');
         const chatbotContainer = document.getElementById('chatbotContainer');
         const chatbotClose = document.getElementById('chatbotClose');
@@ -2060,21 +2994,75 @@
         chatbotClose.addEventListener('click', function() {
             chatbotContainer.classList.remove('active');
         });
-        
-        // Respuestas del chatbot
-        const botResponses = [
-            "Gracias por tu interés. Nuestro equipo te responderá pronto.",
-            "Puedes encontrar más información en nuestra sección de servicios.",
-            "Ofrecemos cursos de certificación en diversas áreas tecnológicas.",
-            "Nuestros productos están diseñados para optimizar tus procesos empresariales.",
-            "Para contactar con un especialista, completa el formulario de contacto.",
-            "Nuestra sede principal está en Av. Tecnología 1234, Ciudad Innovación.",
-            "Puedes suscribirte a nuestro newsletter para recibir las últimas novedades.",
-            "Todos nuestros productos incluyen soporte técnico y actualizaciones.",
-            "Tenemos equipos, piezas y desarrollos personalizados para tu empresa.",
-            "Visita nuestra sección de productos para ver todas las categorías disponibles."
-        ];
-        
+
+        // Base de conocimiento del chatbot
+        const chatbotKnowledge = {
+            'servicios': [
+                'Ofrecemos mantenimiento preventivo, reparación especializada, instalación profesional, seguridad informática, recuperación de datos, infraestructura de red, soluciones cloud y soporte técnico 24/7.',
+                'Nuestros servicios incluyen diagnóstico y reparación de computadoras, laptops, servidores y equipos de red por técnicos certificados.',
+                'Proporcionamos mantenimiento preventivo para prevenir fallos y prolongar la vida útil de tus equipos tecnológicos.'
+            ],
+            'productos': [
+                'Tenemos tres categorías principales: Equipos (laptops, desktops, servidores), Piezas (procesadores, tarjetas gráficas, memoria, almacenamiento) y Software (antivirus, backup, herramientas de sistema).',
+                'Todos nuestros productos incluyen garantía y soporte técnico. Puedes comprar online con entrega a domicilio o recoger en tienda.',
+                'Contamos con marcas líderes y productos de alta calidad para satisfacer todas tus necesidades tecnológicas.'
+            ],
+            'cursos': [
+                'Ofrecemos cursos de certificación en: Técnico en Hardware, Administración de Redes, Seguridad Informática, Administración de Servidores, Computación en la Nube, Recuperación de Datos, Reparación de Dispositivos Móviles y Soporte IT Empresarial.',
+                'Nuestros cursos tienen duración de 6 a 12 semanas con certificación reconocida en la industria.',
+                'Los precios varían desde $199 hasta $399 según el nivel y duración del curso.'
+            ],
+            'precios': [
+                'Los precios de nuestros productos varían según la categoría. Equipos desde $499 hasta $4,999, Piezas desde $59 hasta $1,199, y Software desde $59 hasta $299.',
+                'El costo de domicilio es de $50 para entrega normal, $100 para express y $150 fuera de la ciudad.',
+                'Ofrecemos descuentos especiales para compras por volumen y clientes corporativos.'
+            ],
+            'contacto': [
+                'Puedes contactarnos en Av. Tecnología 1234, Ciudad Innovación, CP 12345.',
+                'Nuestro teléfono es +1 (555) 123-4567 y nuestro email es info@noda.tech.',
+                'Nuestro horario de atención es Lunes a Viernes de 9:00 AM a 6:00 PM y Sábados de 10:00 AM a 2:00 PM.'
+            ],
+            'garantia': [
+                'Todos nuestros productos incluyen garantía de fábrica que varía según el tipo de producto.',
+                'Ofrecemos garantía extendida opcional para mayor tranquilidad.',
+                'El servicio de instalación incluye 30 días de garantía en el trabajo realizado.'
+            ],
+            'default': [
+                'Entiendo tu consulta. ¿Podrías darme más detalles para ayudarte mejor?',
+                'Estoy aquí para ayudarte. Puedes preguntarme sobre nuestros servicios, productos, cursos o información de contacto.',
+                'Si necesitas asistencia inmediata, puedes llamarnos al +1 (555) 123-4567 o escribir a info@noda.tech.'
+            ]
+        };
+
+        function getBotResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            for (const [key, responses] of Object.entries(chatbotKnowledge)) {
+                if (key !== 'default' && lowerMessage.includes(key)) {
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+            
+            // Respuestas específicas
+            if (lowerMessage.includes('hola') || lowerMessage.includes('buenos')) {
+                return '¡Hola! Bienvenido a Noda. ¿En qué puedo ayudarte hoy?';
+            }
+            if (lowerMessage.includes('gracias')) {
+                return '¡De nada! Estoy aquí para ayudarte. ¿Hay algo más en lo que pueda asistirte?';
+            }
+            if (lowerMessage.includes('adios')) {
+                return '¡Hasta pronto! No dudes en contactarnos si necesitas algo más. ¡Que tengas un excelente día!';
+            }
+            if (lowerMessage.includes('comprar') || lowerMessage.includes('compra')) {
+                return 'Puedes comprar directamente desde nuestra sección de productos. Haz clic en "Comprar ahora" y completa el formulario. Aceptamos tarjeta, transferencia, PayPal y efectivo en tienda.';
+            }
+            if (lowerMessage.includes('domicilio') || lowerMessage.includes('envio')) {
+                return 'El domicilio cuesta $50 normal, $100 express y $150 fuera de la ciudad. La entrega normal es en 24-48 horas.';
+            }
+            
+            return chatbotKnowledge.default[Math.floor(Math.random() * chatbotKnowledge.default.length)];
+        }
+
         function sendMessage() {
             const messageText = chatbotInput.value.trim();
             if (messageText) {
@@ -2087,20 +3075,28 @@
                 // Limpiar input
                 chatbotInput.value = '';
                 
+                // Mostrar indicador de escritura
+                const typingIndicator = document.createElement('div');
+                typingIndicator.classList.add('message', 'bot', 'typing');
+                typingIndicator.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+                chatbotMessages.appendChild(typingIndicator);
+                
+                // Scroll al final
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                
                 // Simular respuesta del bot
                 setTimeout(() => {
+                    typingIndicator.remove();
+                    
                     const botMessage = document.createElement('div');
                     botMessage.classList.add('message', 'bot');
-                    const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-                    botMessage.textContent = randomResponse;
+                    const response = getBotResponse(messageText);
+                    botMessage.textContent = response;
                     chatbotMessages.appendChild(botMessage);
                     
                     // Scroll al final
                     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-                }, 1000);
-                
-                // Scroll al final
-                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                }, 1500);
             }
         }
         
@@ -2111,57 +3107,112 @@
                 sendMessage();
             }
         });
-        
+
+        // Login de administrador
+        function openAdminLogin() {
+            document.getElementById('adminModal').classList.add('active');
+        }
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            // Credenciales por defecto (en producción usar base de datos real)
+            if (username === 'admin' && password === 'admin123') {
+                isAdminLoggedIn = true;
+                document.getElementById('adminModal').classList.remove('active');
+                document.getElementById('adminPanel').classList.add('active');
+                showNotification('success', 'Bienvenido', 'Has iniciado sesión como administrador');
+                loadAdminData();
+            } else {
+                showNotification('error', 'Error', 'Credenciales incorrectas');
+            }
+        });
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('active');
+            isAdminLoggedIn = false;
+        }
+
+        function loadAdminData() {
+            // Cargar datos guardados
+            const savedData = localStorage.getItem('adminData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('companyName').value = data.companyName || 'Noda';
+                document.getElementById('companyPhone').value = data.companyPhone || '+1 (555) 123-4567';
+                document.getElementById('companyEmail').value = data.companyEmail || 'info@noda.tech';
+                document.getElementById('normalDelivery').value = data.normalDelivery || 50;
+                document.getElementById('expressDelivery').value = data.expressDelivery || 100;
+                document.getElementById('outOfTownDelivery').value = data.outOfTownDelivery || 150;
+            }
+        }
+
+        function saveAdminChanges() {
+            if (!isAdminLoggedIn) {
+                showNotification('error', 'Error', 'Debes iniciar sesión como administrador');
+                return;
+            }
+            
+            const adminData = {
+                companyName: document.getElementById('companyName').value,
+                companyPhone: document.getElementById('companyPhone').value,
+                companyEmail: document.getElementById('companyEmail').value,
+                normalDelivery: document.getElementById('normalDelivery').value,
+                expressDelivery: document.getElementById('expressDelivery').value,
+                outOfTownDelivery: document.getElementById('outOfTownDelivery').value
+            };
+            
+            localStorage.setItem('adminData', JSON.stringify(adminData));
+            
+            // Actualizar la página con los nuevos datos
+            document.querySelector('.logo').innerHTML = `<i class="fas fa-network-wired"></i> ${adminData.companyName}`;
+            document.querySelectorAll('.footer-column p')[3].innerHTML = `<i class="fas fa-phone"></i> ${adminData.companyPhone}`;
+            document.querySelectorAll('.footer-column p')[4].innerHTML = `<i class="fas fa-envelope"></i> ${adminData.companyEmail}`;
+            
+            showNotification('success', 'Guardado', 'Los cambios han sido guardados exitosamente');
+        }
+
         // Formulario de contacto
-        const contactForm = document.getElementById('contactForm');
-        contactForm.addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Mostrar mensaje de éxito
-            const formContainer = this.parentElement;
-            const successMessage = document.createElement('div');
-            successMessage.style.padding = '1rem';
-            successMessage.style.backgroundColor = '#2ecc71';
-            successMessage.style.color = 'white';
-            successMessage.style.borderRadius = '5px';
-            successMessage.style.marginTop = '1rem';
-            successMessage.style.textAlign = 'center';
-            successMessage.textContent = '¡Mensaje enviado con éxito! Te contactaremos pronto.';
+            const contactData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                date: new Date().toISOString()
+            };
             
-            formContainer.appendChild(successMessage);
+            // Guardar en localStorage
+            let contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+            contacts.push(contactData);
+            localStorage.setItem('contacts', JSON.stringify(contacts));
+            
+            showNotification('success', 'Mensaje Enviado', 'Tu mensaje ha sido enviado correctamente. Te contactaremos pronto.');
             this.reset();
-            
-            // Eliminar mensaje después de 5 segundos
-            setTimeout(() => {
-                successMessage.remove();
-            }, 5000);
         });
-        
-        // Formulario de newsletter
-        const newsletterForm = document.getElementById('newsletterForm');
-        newsletterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+
+        // Sistema de notificaciones
+        function showNotification(type, title, message) {
+            const notification = document.getElementById('notification');
+            const notificationTitle = document.getElementById('notificationTitle');
+            const notificationMessage = document.getElementById('notificationMessage');
             
-            // Mostrar mensaje de éxito
-            const successMessage = document.createElement('div');
-            successMessage.style.padding = '0.5rem';
-            successMessage.style.backgroundColor = '#2ecc71';
-            successMessage.style.color = 'white';
-            successMessage.style.borderRadius = '5px';
-            successMessage.style.marginTop = '0.5rem';
-            successMessage.style.textAlign = 'center';
-            successMessage.style.fontSize = '0.9rem';
-            successMessage.textContent = '¡Gracias por suscribirte a nuestro newsletter!';
+            notification.className = 'notification ' + type;
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
             
-            this.parentElement.appendChild(successMessage);
-            this.reset();
+            notification.classList.add('show');
             
-            // Eliminar mensaje después de 5 segundos
             setTimeout(() => {
-                successMessage.remove();
+                notification.classList.remove('show');
             }, 5000);
-        });
-        
+        }
+
         // Animación de elementos al hacer scroll
         const animateOnScroll = function() {
             const elements = document.querySelectorAll('.service-card, .course-card');
@@ -2176,18 +3227,18 @@
                 }
             });
         };
-        
+
         // Establecer estado inicial para animación
         document.querySelectorAll('.service-card, .course-card').forEach(element => {
             element.style.opacity = '0';
             element.style.transform = 'translateY(30px)';
             element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         });
-        
+
         // Ejecutar animación al cargar y hacer scroll
         window.addEventListener('load', animateOnScroll);
         window.addEventListener('scroll', animateOnScroll);
-        
+
         // Efecto hover en productos con relieve
         const productCards = document.querySelectorAll('.product-card');
         productCards.forEach(card => {
@@ -2208,6 +3259,21 @@
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
             });
+        });
+
+        // Cerrar modales con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePurchaseModal();
+                document.getElementById('adminModal').classList.remove('active');
+                document.getElementById('imageModal').classList.remove('active');
+            }
+        });
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdminData();
+            showNotification('info', 'Bienvenido', 'Explora nuestros productos y servicios tecnológicos');
         });
     </script>
 </body>
