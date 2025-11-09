@@ -3,24 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noda - Pagos Colombia</title>
+    <title>Noda - Pasarela de Pago Colombia</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --nequi-color: #8dc63f;
-            --daviplata-color: #f47920;
-            --pse-color: #6c757d;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #1e3a8a;
+            --accent-color: #ff6b35;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --nequi-color: #8dc63f;
+            --daviplata-color: #f47920;
+            --pse-color: #6c757d;
+            --card-color: #4a5568;
+            --cash-color: #059669;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
+            --shadow-2xl: 0 25px 50px rgba(0,0,0,0.25);
         }
 
         body {
@@ -28,280 +40,691 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,133.3C960,128,1056,96,1152,90.7C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            background: white;
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            background: white;
+            bottom: 20%;
+            left: 30%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(20px) rotate(240deg); }
         }
 
         .payment-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: var(--shadow-2xl);
             overflow: hidden;
+            position: relative;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .payment-header {
-            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            background: var(--gradient-primary);
             color: white;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .payment-header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .payment-header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .security-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
         }
 
         .payment-body {
-            padding: 40px;
+            padding: 50px;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e5e7eb;
+            z-index: 1;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 2px;
+            background: var(--success-color);
+            width: 33.33%;
+            z-index: 2;
+            transition: width 0.3s ease;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+        }
+
+        .progress-step .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-number {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        }
+
+        .progress-step.completed .step-number {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        .progress-step .step-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--success-color);
+            font-weight: 600;
         }
 
         .order-summary {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
         }
 
         .order-summary h3 {
             color: var(--secondary-color);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .order-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .order-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .order-item-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order-item-name i {
+            color: var(--primary-color);
+        }
+
+        .order-item-price {
+            font-weight: 600;
+            color: var(--secondary-color);
         }
 
         .order-total {
-            font-size: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--primary-color);
-            margin-top: 15px;
-            padding-top: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 2px solid var(--primary-color);
         }
 
         .payment-methods {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .payment-methods h3 {
             color: var(--secondary-color);
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .payment-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
         .payment-option {
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
             background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .payment-option:hover::before {
+            left: 100%;
         }
 
         .payment-option:hover {
             border-color: var(--primary-color);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
         }
 
         .payment-option.selected {
             border-color: var(--primary-color);
-            background: rgba(52, 152, 219, 0.1);
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.05) 0%, rgba(0, 102, 204, 0.1) 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
         }
 
         .payment-option i {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 15px;
             display: block;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover i {
+            transform: scale(1.1);
         }
 
         .payment-option.nequi i { color: var(--nequi-color); }
         .payment-option.daviplata i { color: var(--daviplata-color); }
         .payment-option.pse i { color: var(--pse-color); }
-        .payment-option.tarjeta i { color: var(--primary-color); }
-        .payment-option.efectivo i { color: var(--success-color); }
+        .payment-option.tarjeta i { color: var(--card-color); }
+        .payment-option.efectivo i { color: var(--cash-color); }
+
+        .payment-option span {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
 
         .payment-form {
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: fadeInUp 0.5s ease;
         }
 
         .payment-form.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
             color: var(--secondary-color);
+            font-size: 0.95rem;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
             font-size: 1rem;
             transition: all 0.3s ease;
+            background: white;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: #9ca3af;
         }
 
         .bank-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 10px;
-            max-height: 300px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            max-height: 350px;
             overflow-y: auto;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+        }
+
+        .bank-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .bank-grid::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .bank-grid::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
         }
 
         .bank-option {
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            background: white;
         }
 
         .bank-option:hover {
-            background: #f8f9fa;
+            background: #f8fafc;
             border-color: var(--primary-color);
+            transform: translateX(5px);
         }
 
         .bank-option.selected {
             background: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
         }
 
         .bank-logo {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #e0e0e0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            color: white;
             font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .bank-option.selected .bank-logo {
+            background: white;
+            color: var(--primary-color);
         }
 
         .card-inputs {
             display: grid;
-            gap: 15px;
+            gap: 20px;
         }
 
         .card-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+
+        .input-group input {
+            padding-left: 45px;
+        }
+
+        .input-group input:focus + i {
+            color: var(--primary-color);
         }
 
         .qr-container {
             text-align: center;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin: 20px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            margin: 30px 0;
+            border: 2px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            z-index: -1;
+            opacity: 0.1;
         }
 
         .qr-code {
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             margin: 20px auto;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border: 3px solid white;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: white;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-code::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(0,102,204,0.1) 50%, transparent 70%);
+            transform: translate(-50%, -50%) rotate(0deg);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         .instructions {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid var(--primary-color);
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid var(--primary-color);
+            position: relative;
+        }
+
+        .instructions::before {
+            content: 'ℹ️';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
         }
 
         .instructions h4 {
             color: var(--primary-color);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .instructions ol {
-            margin-left: 20px;
+            margin-left: 25px;
         }
 
         .instructions li {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: #4b5563;
         }
 
         .pay-button {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--success-color), #27ae60);
+            padding: 18px;
+            background: var(--gradient-success);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 20px;
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pay-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .pay-button:hover::before {
+            left: 100%;
         }
 
         .pay-button:hover {
-            background: linear-gradient(135deg, #27ae60, var(--success-color));
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .pay-button:active {
+            transform: translateY(-1px);
         }
 
         .pay-button:disabled {
-            background: #bdc3c7;
+            background: var(--gradient-error);
             cursor: not-allowed;
             transform: none;
+            opacity: 0.7;
         }
 
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 40px;
         }
 
         .loading.active {
@@ -309,11 +732,11 @@
         }
 
         .spinner {
+            width: 50px;
+            height: 50px;
             border: 4px solid #f3f3f3;
             border-top: 4px solid var(--primary-color);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
@@ -323,84 +746,427 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error-message {
-            background: #ffebee;
-            color: var(--accent-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid var(--accent-color);
-            display: none;
+        .loading-text {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-top: 15px;
         }
 
-        .error-message.active {
-            display: block;
+        .error-message,
+        .success-message,
+        .warning-message {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: var(--error-color);
+            border-left: 5px solid var(--error-color);
         }
 
         .success-message {
-            background: #e8f5e8;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
             color: var(--success-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid var(--success-color);
-            display: none;
+            border-left: 5px solid var(--success-color);
         }
 
-        .success-message.active {
-            display: block;
+        .warning-message {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            color: var(--warning-color);
+            border-left: 5px solid var(--warning-color);
+        }
+
+        .error-message.active,
+        .success-message.active,
+        .warning-message.active {
+            display: flex;
+        }
+
+        .message-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-title {
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
         .countdown {
-            background: var(--warning-color);
+            background: var(--gradient-warning);
             color: white;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            margin: 15px 0;
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .countdown.active {
+            display: block;
+        }
+
+        .countdown-timer {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .payment-status {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 16px;
+            margin: 30px 0;
+            display: none;
+        }
+
+        .payment-status.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .status-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 20px;
+        }
+
+        .status-title {
+            font-size: 1.5rem;
+            color: var(--success-color);
+            margin-bottom: 10px;
             font-weight: bold;
         }
 
+        .status-message {
+            color: #4b5563;
+            margin-bottom: 20px;
+        }
+
+        .status-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .status-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .status-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .status-value {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
+            .payment-body {
+                padding: 30px 20px;
+            }
+
+            .payment-header {
+                padding: 30px 20px;
+            }
+
+            .payment-header h1 {
+                font-size: 2rem;
+            }
+
             .payment-options {
                 grid-template-columns: 1fr 1fr;
+                gap: 15px;
             }
-            
+
             .card-row {
                 grid-template-columns: 1fr;
             }
-            
+
             .bank-grid {
                 grid-template-columns: 1fr;
+                max-height: 250px;
             }
+
+            .order-total {
+                font-size: 1.5rem;
+            }
+
+            .security-badges {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-option {
+                padding: 20px;
+            }
+
+            .qr-code {
+                width: 180px;
+                height: 180px;
+            }
+        }
+
+        /* Animaciones adicionales */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bounce {
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-icon.success {
+            color: var(--success-color);
+        }
+
+        .modal-icon.error {
+            color: var(--error-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        .modal-message {
+            color: #6b7280;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .modal-button {
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
+    <!-- Formas animadas de fondo -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
     <div class="payment-container">
+        <!-- Header -->
         <div class="payment-header">
-            <h1><i class="fas fa-shield-alt"></i> Pago Seguro Noda</h1>
-            <p>Todos tus datos están protegidos con encriptación de nivel bancario</p>
+            <h1><i class="fas fa-shield-alt"></i> Pasarela de Pago Segura</h1>
+            <p class="subtitle">Transacción protegida con encriptación de nivel bancario</p>
+            <div class="security-badges">
+                <div class="security-badge">
+                    <i class="fas fa-lock"></i>
+                    <span>SSL Seguro</span>
+                </div>
+                <div class="security-badge">
+                    <i class="fas fa-certificate"></i>
+                    <span>PCI DSS</span>
+                </div>
+                <div class="security-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>3D Secure</span>
+                </div>
+            </div>
         </div>
 
+        <!-- Body -->
         <div class="payment-body">
+            <!-- Barra de progreso -->
+            <div class="progress-bar">
+                <div class="progress-step active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Método de pago</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Datos</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Confirmación</div>
+                </div>
+            </div>
+
             <!-- Resumen del pedido -->
             <div class="order-summary">
                 <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Compra</h3>
                 <div class="order-item">
-                    <span>Laptop Business Pro</span>
-                    <span>$1,299,000 COP</span>
+                    <div class="order-item-name">
+                        <i class="fas fa-laptop"></i>
+                        <span>Laptop Business Pro</span>
+                    </div>
+                    <div class="order-item-price">$1,299,000 COP</div>
                 </div>
                 <div class="order-item">
-                    <span>Servicio de Instalación</span>
-                    <span>$150,000 COP</span>
+                    <div class="order-item-name">
+                        <i class="fas fa-tools"></i>
+                        <span>Servicio de Instalación</span>
+                    </div>
+                    <div class="order-item-price">$150,000 COP</div>
                 </div>
                 <div class="order-item">
-                    <span>Costo Domicilio</span>
-                    <span>$50,000 COP</span>
+                    <div class="order-item-name">
+                        <i class="fas fa-truck"></i>
+                        <span>Costo Domicilio</span>
+                    </div>
+                    <div class="order-item-price">$50,000 COP</div>
                 </div>
                 <div class="order-total">
-                    Total: $1,499,000 COP
+                    <span>Total a Pagar:</span>
+                    <span>$1,499,000 COP</span>
                 </div>
             </div>
 
@@ -431,36 +1197,38 @@
                     </div>
                 </div>
 
-                <!-- Formularios de pago -->
-                
                 <!-- Formulario Nequi -->
                 <div class="payment-form" id="nequi-form">
                     <div class="instructions">
-                        <h4>📱 Pagar con Nequi</h4>
+                        <h4><i class="fas fa-mobile-alt"></i> Pagar con Nequi</h4>
                         <ol>
                             <li>Ingresa tu número de celular registrado en Nequi</li>
                             <li>Recibirás un mensaje con el enlace de pago</li>
-                            <li>Confirma el pago en tu app de Nequi</li>
+                            <li>Abre tu app de Nequi y confirma el pago</li>
                             <li>Espera la confirmación (máximo 5 minutos)</li>
                         </ol>
                     </div>
                     
                     <div class="form-group">
-                        <label for="nequi-phone">Número de Celular Nequi</label>
+                        <label for="nequi-phone">
+                            <i class="fas fa-phone"></i> Número de Celular Nequi
+                        </label>
                         <input type="tel" id="nequi-phone" placeholder="3001234567" maxlength="10" pattern="[0-9]{10}">
                     </div>
                     
                     <div class="form-group">
-                        <label for="nequi-name">Nombre del Titular</label>
+                        <label for="nequi-name">
+                            <i class="fas fa-user"></i> Nombre del Titular
+                        </label>
                         <input type="text" id="nequi-name" placeholder="Juan Pérez">
                     </div>
                     
                     <div class="qr-container" id="nequi-qr" style="display: none;">
-                        <h4>Escanea este código QR con Nequi</h4>
+                        <h4><i class="fas fa-qrcode"></i> Escanea este código QR</h4>
                         <div class="qr-code">
-                            <i class="fas fa-qrcode" style="font-size: 3rem; color: #ccc;"></i>
+                            <i class="fas fa-qrcode" style="font-size: 4rem; color: #ccc;"></i>
                         </div>
-                        <p>O haz clic aquí para abrir automáticamente</p>
+                        <p>O haz clic en el enlace que recibirás por SMS</p>
                     </div>
                     
                     <button class="pay-button" onclick="processNequiPayment()">
@@ -471,7 +1239,7 @@
                 <!-- Formulario Daviplata -->
                 <div class="payment-form" id="daviplata-form">
                     <div class="instructions">
-                        <h4>💰 Pagar con Daviplata</h4>
+                        <h4><i class="fas fa-money-bill-wave"></i> Pagar con Daviplata</h4>
                         <ol>
                             <li>Ingresa tu número de celular registrado en Daviplata</li>
                             <li>Recibirás una notificación para confirmar el pago</li>
@@ -481,12 +1249,16 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="daviplata-phone">Número de Celular Daviplata</label>
+                        <label for="daviplata-phone">
+                            <i class="fas fa-phone"></i> Número de Celular Daviplata
+                        </label>
                         <input type="tel" id="daviplata-phone" placeholder="3001234567" maxlength="10" pattern="[0-9]{10}">
                     </div>
                     
                     <div class="form-group">
-                        <label for="daviplata-id">Número de Identificación</label>
+                        <label for="daviplata-id">
+                            <i class="fas fa-id-card"></i> Número de Identificación
+                        </label>
                         <input type="text" id="daviplata-id" placeholder="123456789">
                     </div>
                     
@@ -498,19 +1270,23 @@
                 <!-- Formulario PSE -->
                 <div class="payment-form" id="pse-form">
                     <div class="instructions">
-                        <h4>🏦 Pagar con PSE</h4>
+                        <h4><i class="fas fa-university"></i> Pagar con PSE</h4>
                         <p>Paga directamente desde la banca en línea de tu banco. Es seguro y no necesitas tarjeta.</p>
                     </div>
                     
                     <div class="form-group">
-                        <label for="pse-bank">Selecciona tu Banco</label>
+                        <label for="pse-bank">
+                            <i class="fas fa-university"></i> Selecciona tu Banco
+                        </label>
                         <div class="bank-grid" id="bank-list">
                             <!-- Los bancos se cargarán dinámicamente -->
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="pse-type">Tipo de Persona</label>
+                        <label for="pse-type">
+                            <i class="fas fa-user"></i> Tipo de Persona
+                        </label>
                         <select id="pse-type">
                             <option value="">Seleccionar</option>
                             <option value="0">Persona Natural</option>
@@ -519,17 +1295,23 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="pse-id">Número de Identificación</label>
+                        <label for="pse-id">
+                            <i class="fas fa-id-card"></i> Número de Identificación
+                        </label>
                         <input type="text" id="pse-id" placeholder="123456789">
                     </div>
                     
                     <div class="form-group">
-                        <label for="pse-name">Nombre Completo</label>
+                        <label for="pse-name">
+                            <i class="fas fa-user"></i> Nombre Completo
+                        </label>
                         <input type="text" id="pse-name" placeholder="Juan Pérez">
                     </div>
                     
                     <div class="form-group">
-                        <label for="pse-email">Email</label>
+                        <label for="pse-email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
                         <input type="email" id="pse-email" placeholder="juan@ejemplo.com">
                     </div>
                     
@@ -541,35 +1323,57 @@
                 <!-- Formulario Tarjeta -->
                 <div class="payment-form" id="tarjeta-form">
                     <div class="instructions">
-                        <h4>💳 Pagar con Tarjeta</h4>
-                        <p>Aceptamos tarjetas de crédito y débito de todos los bancos colombianos.</p>
+                        <h4><i class="fas fa-credit-card"></i> Pagar con Tarjeta</h4>
+                        <p>Aceptamos tarjetas de crédito y débito de todos los bancos colombianos con cuotas sin intereses.</p>
                     </div>
                     
                     <div class="card-inputs">
                         <div class="form-group">
-                            <label for="card-number">Número de Tarjeta</label>
-                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                            <label for="card-number">
+                                <i class="fas fa-credit-card"></i> Número de Tarjeta
+                            </label>
+                            <div class="input-group">
+                                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="card-name">Nombre del Titular</label>
-                            <input type="text" id="card-name" placeholder="JUAN PEREZ">
+                            <label for="card-name">
+                                <i class="fas fa-user"></i> Nombre del Titular
+                            </label>
+                            <div class="input-group">
+                                <input type="text" id="card-name" placeholder="JUAN PEREZ">
+                                <i class="fas fa-user"></i>
+                            </div>
                         </div>
                         
                         <div class="card-row">
                             <div class="form-group">
-                                <label for="card-expiry">Fecha de Vencimiento</label>
-                                <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5">
+                                <label for="card-expiry">
+                                    <i class="fas fa-calendar"></i> Fecha de Vencimiento
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="card-cvv">CVV</label>
-                                <input type="text" id="card-cvv" placeholder="123" maxlength="4">
+                                <label for="card-cvv">
+                                    <i class="fas fa-lock"></i> CVV
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" id="card-cvv" placeholder="123" maxlength="4">
+                                    <i class="fas fa-lock"></i>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="card-dues">Cuotas</label>
+                            <label for="card-dues">
+                                <i class="fas fa-calendar-alt"></i> Cuotas
+                            </label>
                             <select id="card-dues">
                                 <option value="1">1 cuota - $1,499,000</option>
                                 <option value="3">3 cuotas - $499,667/mes</option>
@@ -582,8 +1386,13 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="card-email">Email para confirmación</label>
-                            <input type="email" id="card-email" placeholder="juan@ejemplo.com">
+                            <label for="card-email">
+                                <i class="fas fa-envelope"></i> Email para confirmación
+                            </label>
+                            <div class="input-group">
+                                <input type="email" id="card-email" placeholder="juan@ejemplo.com">
+                                <i class="fas fa-envelope"></i>
+                            </div>
                         </div>
                     </div>
                     
@@ -595,12 +1404,14 @@
                 <!-- Formulario Efectivo -->
                 <div class="payment-form" id="efectivo-form">
                     <div class="instructions">
-                        <h4>💵 Pagar en Efectivo</h4>
-                        <p>Puedes pagar en nuestros puntos de atención o en puntos autorizados.</p>
+                        <h4><i class="fas fa-money-bill"></i> Pagar en Efectivo</h4>
+                        <p>Puedes pagar en nuestros puntos de atención o en puntos autorizados nationwide.</p>
                     </div>
                     
                     <div class="form-group">
-                        <label for="efectivo-location">¿Dónde deseas pagar?</label>
+                        <label for="efectivo-location">
+                            <i class="fas fa-map-marker-alt"></i> ¿Dónde deseas pagar?
+                        </label>
                         <select id="efectivo-location">
                             <option value="">Seleccionar ubicación</option>
                             <option value="tienda">Tienda Noda - Principal</option>
@@ -609,26 +1420,36 @@
                             <option value="efecty">Efecty</option>
                             <option value="sured">Sured</option>
                             <option value="giros">Giros y Finanzas</option>
+                            <option value="supergiros">Supergiros</option>
+                            <option value="paga_todo">Paga Todo</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="efectivo-name">Nombre Completo</label>
+                        <label for="efectivo-name">
+                            <i class="fas fa-user"></i> Nombre Completo
+                        </label>
                         <input type="text" id="efectivo-name" placeholder="Juan Pérez">
                     </div>
                     
                     <div class="form-group">
-                        <label for="efectivo-id">Número de Identificación</label>
+                        <label for="efectivo-id">
+                            <i class="fas fa-id-card"></i> Número de Identificación
+                        </label>
                         <input type="text" id="efectivo-id" placeholder="123456789">
                     </div>
                     
                     <div class="form-group">
-                        <label for="efectivo-phone">Teléfono</label>
+                        <label for="efectivo-phone">
+                            <i class="fas fa-phone"></i> Teléfono
+                        </label>
                         <input type="tel" id="efectivo-phone" placeholder="3001234567">
                     </div>
                     
                     <div class="form-group">
-                        <label for="efectivo-email">Email</label>
+                        <label for="efectivo-email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
                         <input type="email" id="efectivo-email" placeholder="juan@ejemplo.com">
                     </div>
                     
@@ -639,13 +1460,80 @@
             </div>
 
             <!-- Mensajes de estado -->
-            <div class="error-message" id="error-message"></div>
-            <div class="success-message" id="success-message"></div>
+            <div class="error-message" id="error-message">
+                <i class="fas fa-exclamation-circle message-icon"></i>
+                <div class="message-content">
+                    <div class="message-title">Error</div>
+                    <div class="message-text">Mensaje de error</div>
+                </div>
+            </div>
+            
+            <div class="success-message" id="success-message">
+                <i class="fas fa-check-circle message-icon"></i>
+                <div class="message-content">
+                    <div class="message-title">Éxito</div>
+                    <div class="message-text">Mensaje de éxito</div>
+                </div>
+            </div>
+            
+            <div class="warning-message" id="warning-message">
+                <i class="fas fa-exclamation-triangle message-icon"></i>
+                <div class="message-content">
+                    <div class="message-title">Advertencia</div>
+                    <div class="message-text">Mensaje de advertencia</div>
+                </div>
+            </div>
+
+            <!-- Loading -->
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Procesando tu pago...</p>
+                <div class="loading-text">Procesando tu pago...</div>
             </div>
-            <div class="countdown" id="countdown" style="display: none;"></div>
+
+            <!-- Countdown -->
+            <div class="countdown" id="countdown">
+                <div>Tiempo restante para completar el pago</div>
+                <div class="countdown-timer" id="countdown-timer">05:00</div>
+            </div>
+
+            <!-- Estado del pago -->
+            <div class="payment-status" id="payment-status">
+                <div class="status-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="status-title">¡Pago Exitoso!</div>
+                <div class="status-message">Tu pago ha sido procesado correctamente</div>
+                <div class="status-details">
+                    <div class="status-row">
+                        <span class="status-label">Número de transacción:</span>
+                        <span class="status-value" id="transaction-id">TXN123456789</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Monto:</span>
+                        <span class="status-value">$1,499,000 COP</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Método de pago:</span>
+                        <span class="status-value" id="payment-method-display">Nequi</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Fecha y hora:</span>
+                        <span class="status-value" id="payment-date">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="modal-title" id="modal-title">Título</div>
+            <div class="modal-message" id="modal-message">Mensaje</div>
+            <button class="modal-button" onclick="closeModal()">Aceptar</button>
         </div>
     </div>
 
@@ -687,12 +1575,24 @@
         let selectedPaymentMethod = null;
         let selectedBank = null;
         let paymentTimer = null;
+        let currentTransactionId = null;
+
+        // Configuración de pagos
+        const PAYMENT_CONFIG = {
+            amount: 1499000,
+            currency: 'COP',
+            description: 'Compra Noda Tech',
+            returnUrl: 'https://noda.tech/payment/confirmation',
+            apiKey: 'test_api_key'
+        };
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
             loadBankList();
             setupPaymentMethodListeners();
             setupCardFormatting();
+            setupFormValidation();
+            initializeAnimations();
         });
 
         // Cargar lista de bancos
@@ -700,7 +1600,7 @@
             const bankList = document.getElementById('bank-list');
             bankList.innerHTML = '';
             
-            colombianBanks.forEach(bank => {
+            colombianBanks.forEach((bank, index) => {
                 const bankOption = document.createElement('div');
                 bankOption.className = 'bank-option';
                 bankOption.dataset.bankCode = bank.code;
@@ -709,6 +1609,8 @@
                     <span>${bank.name}</span>
                 `;
                 bankOption.addEventListener('click', () => selectBank(bank));
+                bankOption.style.animationDelay = `${index * 0.05}s`;
+                bankOption.classList.add('fade-in');
                 bankList.appendChild(bankOption);
             });
         }
@@ -718,6 +1620,11 @@
             document.querySelectorAll('.bank-option').forEach(opt => opt.classList.remove('selected'));
             document.querySelector(`[data-bank-code="${bank.code}"]`).classList.add('selected');
             selectedBank = bank;
+            
+            // Animación de selección
+            const selectedElement = document.querySelector(`[data-bank-code="${bank.code}"]`);
+            selectedElement.classList.add('bounce');
+            setTimeout(() => selectedElement.classList.remove('bounce'), 500);
         }
 
         // Configurar listeners de métodos de pago
@@ -740,10 +1647,19 @@
             document.querySelectorAll('.payment-form').forEach(form => form.classList.remove('active'));
             
             // Mostrar formulario seleccionado
-            document.getElementById(`${method}-form`).classList.add('active');
+            const selectedForm = document.getElementById(`${method}-form`);
+            selectedForm.classList.add('active');
+            
+            // Actualizar barra de progreso
+            updateProgressBar(1);
             
             selectedPaymentMethod = method;
             hideMessages();
+            
+            // Scroll al formulario
+            setTimeout(() => {
+                selectedForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
 
         // Formato de tarjeta
@@ -757,6 +1673,9 @@
                     let value = e.target.value.replace(/\s/g, '');
                     let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
                     e.target.value = formattedValue;
+                    
+                    // Detectar tipo de tarjeta
+                    detectCardType(value);
                 });
             }
             
@@ -777,21 +1696,97 @@
             }
         }
 
+        // Detectar tipo de tarjeta
+        function detectCardType(cardNumber) {
+            const cardNumberClean = cardNumber.replace(/\s/g, '');
+            let cardType = '';
+            
+            // Visa
+            if (/^4/.test(cardNumberClean)) {
+                cardType = 'visa';
+            }
+            // Mastercard
+            else if (/^5[1-5]/.test(cardNumberClean)) {
+                cardType = 'mastercard';
+            }
+            // Amex
+            else if (/^3[47]/.test(cardNumberClean)) {
+                cardType = 'amex';
+            }
+            // Diners Club
+            else if (/^3[068]/.test(cardNumberClean)) {
+                cardType = 'diners';
+            }
+            
+            // Aquí podrías mostrar el logo de la tarjeta
+            console.log('Card type:', cardType);
+        }
+
+        // Validación de formularios
+        function setupFormValidation() {
+            // Validación de teléfono
+            document.querySelectorAll('input[type="tel"]').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+            });
+            
+            // Validación de número de identificación
+            document.querySelectorAll('input[id*="id"]').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+            });
+        }
+
+        // Inicializar animaciones
+        function initializeAnimations() {
+            // Animación de entrada
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.payment-option, .form-group').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Actualizar barra de progreso
+        function updateProgressBar(step) {
+            const progressSteps = document.querySelectorAll('.progress-step');
+            progressSteps.forEach((stepEl, index) => {
+                if (index < step) {
+                    stepEl.classList.add('completed');
+                    stepEl.classList.remove('active');
+                } else if (index === step) {
+                    stepEl.classList.add('active');
+                    stepEl.classList.remove('completed');
+                } else {
+                    stepEl.classList.remove('active', 'completed');
+                }
+            });
+            
+            // Actualizar la barra de progreso visual
+            const progressBar = document.querySelector('.progress-bar::after');
+            if (progressBar) {
+                progressBar.style.width = `${(step / 3) * 100}%`;
+            }
+        }
+
         // Procesar pago Nequi
         async function processNequiPayment() {
             const phone = document.getElementById('nequi-phone').value;
             const name = document.getElementById('nequi-name').value;
             
-            if (!phone || !name) {
-                showError('Por favor completa todos los campos');
+            if (!validateNequiForm(phone, name)) {
                 return;
             }
             
-            if (!validatePhone(phone)) {
-                showError('El número de celular no es válido');
-                return;
-            }
-            
+            updateProgressBar(2);
             showLoading();
             
             try {
@@ -799,13 +1794,17 @@
                 const response = await simulateNequiPayment({
                     phone: phone,
                     name: name,
-                    amount: 1499000,
-                    description: 'Compra Noda Tech'
+                    amount: PAYMENT_CONFIG.amount,
+                    description: PAYMENT_CONFIG.description
                 });
                 
                 if (response.success) {
+                    currentTransactionId = response.transactionId;
+                    
                     // Mostrar QR
-                    document.getElementById('nequi-qr').style.display = 'block';
+                    const qrContainer = document.getElementById('nequi-qr');
+                    qrContainer.style.display = 'block';
+                    qrContainer.classList.add('bounce');
                     
                     // Iniciar contador
                     startCountdown(300, () => {
@@ -813,11 +1812,14 @@
                     });
                     
                     showSuccess('¡Listo! Revisa tu app de Nequi para confirmar el pago');
+                    updateProgressBar(3);
                 } else {
                     showError(response.message || 'Error al procesar el pago con Nequi');
+                    updateProgressBar(1);
                 }
             } catch (error) {
                 showError('Error de conexión. Intenta nuevamente.');
+                updateProgressBar(1);
             } finally {
                 hideLoading();
             }
@@ -828,33 +1830,39 @@
             const phone = document.getElementById('daviplata-phone').value;
             const id = document.getElementById('daviplata-id').value;
             
-            if (!phone || !id) {
-                showError('Por favor completa todos los campos');
+            if (!validateDaviplataForm(phone, id)) {
                 return;
             }
             
+            updateProgressBar(2);
             showLoading();
             
             try {
                 const response = await simulateDaviplataPayment({
                     phone: phone,
                     identification: id,
-                    amount: 1499000,
-                    description: 'Compra Noda Tech'
+                    amount: PAYMENT_CONFIG.amount,
+                    description: PAYMENT_CONFIG.description
                 });
                 
                 if (response.success) {
+                    currentTransactionId = response.transactionId;
+                    
                     showSuccess('¡Listo! Revisa tu app de Daviplata para confirmar el pago');
                     
                     // Verificar estado
                     setTimeout(() => {
                         checkDaviplataStatus(response.transactionId);
                     }, 5000);
+                    
+                    updateProgressBar(3);
                 } else {
                     showError(response.message || 'Error al procesar el pago con Daviplata');
+                    updateProgressBar(1);
                 }
             } catch (error) {
                 showError('Error de conexión. Intenta nuevamente.');
+                updateProgressBar(1);
             } finally {
                 hideLoading();
             }
@@ -867,46 +1875,47 @@
                 return;
             }
             
-            const type = document.getElementById('pse-type').value;
-            const id = document.getElementById('pse-id').value;
-            const name = document.getElementById('pse-name').value;
-            const email = document.getElementById('pse-email').value;
-            
-            if (!type || !id || !name || !email) {
-                showError('Por favor completa todos los campos');
+            const formData = getPSEFormData();
+            if (!validatePSEForm(formData)) {
                 return;
             }
             
+            updateProgressBar(2);
             showLoading();
             
             try {
                 const response = await simulatePSEPayment({
                     bank: selectedBank,
-                    userType: type,
-                    identification: id,
-                    name: name,
-                    email: email,
-                    amount: 1499000,
-                    description: 'Compra Noda Tech',
-                    returnURL: 'https://noda.tech/payment/confirmation',
+                    ...formData,
+                    amount: PAYMENT_CONFIG.amount,
+                    description: PAYMENT_CONFIG.description,
+                    returnURL: PAYMENT_CONFIG.returnUrl,
                     reference: 'NODA_' + Date.now()
                 });
                 
                 if (response.success) {
-                    // Redirigir al banco
-                    window.open(response.paymentURL, '_blank');
+                    currentTransactionId = response.transactionId;
                     
-                    showSuccess('Serás redirigido a la página de tu banco para completar el pago');
+                    // Redirigir al banco
+                    showModal('success', 'Redirigiendo al banco', 'Serás redirigido a la página de tu banco para completar el pago. No cierres esta ventana.');
+                    
+                    setTimeout(() => {
+                        window.open(response.paymentURL, '_blank');
+                    }, 2000);
                     
                     // Iniciar verificación
                     startCountdown(600, () => {
                         checkPSEStatus(response.transactionId);
                     });
+                    
+                    updateProgressBar(3);
                 } else {
                     showError(response.message || 'Error al procesar el pago con PSE');
+                    updateProgressBar(1);
                 }
             } catch (error) {
                 showError('Error de conexión. Intenta nuevamente.');
+                updateProgressBar(1);
             } finally {
                 hideLoading();
             }
@@ -914,49 +1923,39 @@
 
         // Procesar pago con tarjeta
         async function processCardPayment() {
-            const cardNumber = document.getElementById('card-number').value;
-            const cardName = document.getElementById('card-name').value;
-            const cardExpiry = document.getElementById('card-expiry').value;
-            const cardCvv = document.getElementById('card-cvv').value;
-            const cardEmail = document.getElementById('card-email').value;
-            const cardDues = document.getElementById('card-dues').value;
-            
-            if (!cardNumber || !cardName || !cardExpiry || !cardCvv || !cardEmail) {
-                showError('Por favor completa todos los campos');
+            const cardData = getCardFormData();
+            if (!validateCardForm(cardData)) {
                 return;
             }
             
-            if (!validateCard(cardNumber)) {
-                showError('El número de tarjeta no es válido');
-                return;
-            }
-            
+            updateProgressBar(2);
             showLoading();
             
             try {
                 const response = await simulateCardPayment({
-                    cardNumber: cardNumber.replace(/\s/g, ''),
-                    cardName: cardName,
-                    cardExpiry: cardExpiry,
-                    cardCvv: cardCvv,
-                    email: cardEmail,
-                    dues: cardDues,
-                    amount: 1499000,
-                    description: 'Compra Noda Tech'
+                    ...cardData,
+                    amount: PAYMENT_CONFIG.amount,
+                    description: PAYMENT_CONFIG.description
                 });
                 
                 if (response.success) {
-                    showSuccess('¡Pago aprobado! Recibirás un email de confirmación');
+                    currentTransactionId = response.orderId;
                     
-                    // Redirigir a página de confirmación
-                    setTimeout(() => {
-                        window.location.href = '/payment/success?order=' + response.orderId;
-                    }, 3000);
+                    showPaymentSuccess({
+                        transactionId: response.orderId,
+                        amount: PAYMENT_CONFIG.amount,
+                        method: 'Tarjeta de crédito/débito',
+                        authorizationCode: response.authorizationCode
+                    });
+                    
+                    updateProgressBar(3);
                 } else {
                     showError(response.message || 'Error al procesar el pago');
+                    updateProgressBar(1);
                 }
             } catch (error) {
                 showError('Error de conexión. Intenta nuevamente.');
+                updateProgressBar(1);
             } finally {
                 hideLoading();
             }
@@ -964,49 +1963,130 @@
 
         // Procesar pago en efectivo
         async function processCashPayment() {
-            const location = document.getElementById('efectivo-location').value;
-            const name = document.getElementById('efectivo-name').value;
-            const id = document.getElementById('efectivo-id').value;
-            const phone = document.getElementById('efectivo-phone').value;
-            const email = document.getElementById('efectivo-email').value;
-            
-            if (!location || !name || !id || !phone) {
-                showError('Por favor completa todos los campos');
+            const cashData = getCashFormData();
+            if (!validateCashForm(cashData)) {
                 return;
             }
             
+            updateProgressBar(2);
             showLoading();
             
             try {
                 const response = await simulateCashPayment({
-                    location: location,
-                    name: name,
-                    identification: id,
-                    phone: phone,
-                    email: email,
-                    amount: 1499000,
-                    description: 'Compra Noda Tech',
+                    ...cashData,
+                    amount: PAYMENT_CONFIG.amount,
+                    description: PAYMENT_CONFIG.description,
                     reference: 'NODA_' + Date.now()
                 });
                 
                 if (response.success) {
+                    currentTransactionId = response.reference;
+                    
                     showSuccess('¡Orden generada! Presenta este código en el punto de pago: ' + response.reference);
                     
                     // Mostrar código de barras o QR
                     showPaymentReference(response.reference);
+                    
+                    updateProgressBar(3);
                 } else {
                     showError(response.message || 'Error al generar la orden');
+                    updateProgressBar(1);
                 }
             } catch (error) {
                 showError('Error de conexión. Intenta nuevamente.');
+                updateProgressBar(1);
             } finally {
                 hideLoading();
             }
         }
 
         // Funciones de validación
+        function validateNequiForm(phone, name) {
+            if (!phone || !name) {
+                showError('Por favor completa todos los campos');
+                return false;
+            }
+            
+            if (!validatePhone(phone)) {
+                showError('El número de celular no es válido');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function validateDaviplataForm(phone, id) {
+            if (!phone || !id) {
+                showError('Por favor completa todos los campos');
+                return false;
+            }
+            
+            if (!validatePhone(phone)) {
+                showError('El número de celular no es válido');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function validatePSEForm(formData) {
+            if (!selectedBank) {
+                showError('Por favor selecciona tu banco');
+                return false;
+            }
+            
+            if (!formData.type || !formData.id || !formData.name || !formData.email) {
+                showError('Por favor completa todos los campos');
+                return false;
+            }
+            
+            if (!validateEmail(formData.email)) {
+                showError('El email no es válido');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function validateCardForm(cardData) {
+            if (!cardData.cardNumber || !cardData.cardName || !cardData.cardExpiry || !cardData.cardCvv || !cardData.email) {
+                showError('Por favor completa todos los campos');
+                return false;
+            }
+            
+            if (!validateCard(cardData.cardNumber)) {
+                showError('El número de tarjeta no es válido');
+                return false;
+            }
+            
+            if (!validateEmail(cardData.email)) {
+                showError('El email no es válido');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function validateCashForm(cashData) {
+            if (!cashData.location || !cashData.name || !cashData.id || !cashData.phone) {
+                showError('Por favor completa todos los campos');
+                return false;
+            }
+            
+            if (!validatePhone(cashData.phone)) {
+                showError('El número de celular no es válido');
+                return false;
+            }
+            
+            return true;
+        }
+
         function validatePhone(phone) {
             return /^3[0-9]{9}$/.test(phone);
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
         function validateCard(cardNumber) {
@@ -1035,6 +2115,38 @@
             return sum % 10 === 0;
         }
 
+        // Obtener datos de formularios
+        function getPSEFormData() {
+            return {
+                bank: selectedBank,
+                userType: document.getElementById('pse-type').value,
+                identification: document.getElementById('pse-id').value,
+                name: document.getElementById('pse-name').value,
+                email: document.getElementById('pse-email').value
+            };
+        }
+
+        function getCardFormData() {
+            return {
+                cardNumber: document.getElementById('card-number').value.replace(/\s/g, ''),
+                cardName: document.getElementById('card-name').value,
+                cardExpiry: document.getElementById('card-expiry').value,
+                cardCvv: document.getElementById('card-cvv').value,
+                cardEmail: document.getElementById('card-email').value,
+                dues: document.getElementById('card-dues').value
+            };
+        }
+
+        function getCashFormData() {
+            return {
+                location: document.getElementById('efectivo-location').value,
+                name: document.getElementById('efectivo-name').value,
+                identification: document.getElementById('efectivo-id').value,
+                phone: document.getElementById('efectivo-phone').value,
+                email: document.getElementById('efectivo-email').value
+            };
+        }
+
         // Funciones de UI
         function showLoading() {
             document.getElementById('loading').classList.add('active');
@@ -1047,33 +2159,60 @@
 
         function showError(message) {
             const errorElement = document.getElementById('error-message');
-            errorElement.textContent = message;
+            errorElement.querySelector('.message-text').textContent = message;
             errorElement.classList.add('active');
             hideLoading();
+            
+            // Auto ocultar después de 5 segundos
+            setTimeout(() => {
+                errorElement.classList.remove('active');
+            }, 5000);
         }
 
         function showSuccess(message) {
             const successElement = document.getElementById('success-message');
-            successElement.textContent = message;
+            successElement.querySelector('.message-text').textContent = message;
             successElement.classList.add('active');
             hideLoading();
+            
+            // Auto ocultar después de 5 segundos
+            setTimeout(() => {
+                successElement.classList.remove('active');
+            }, 5000);
+        }
+
+        function showWarning(message) {
+            const warningElement = document.getElementById('warning-message');
+            warningElement.querySelector('.message-text').textContent = message;
+            warningElement.classList.add('active');
+            
+            // Auto ocultar después de 5 segundos
+            setTimeout(() => {
+                warningElement.classList.remove('active');
+            }, 5000);
         }
 
         function hideMessages() {
             document.getElementById('error-message').classList.remove('active');
             document.getElementById('success-message').classList.remove('active');
+            document.getElementById('warning-message').classList.remove('active');
         }
 
         function startCountdown(seconds, callback) {
             const countdownElement = document.getElementById('countdown');
+            const countdownTimer = document.getElementById('countdown-timer');
             countdownElement.style.display = 'block';
             
             let remaining = seconds;
             
+            if (paymentTimer) {
+                clearInterval(paymentTimer);
+            }
+            
             paymentTimer = setInterval(() => {
                 const minutes = Math.floor(remaining / 60);
                 const secs = remaining % 60;
-                countdownElement.textContent = `Tiempo restante: ${minutes}:${secs.toString().padStart(2, '0')}`;
+                countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 
                 if (remaining <= 0) {
                     clearInterval(paymentTimer);
@@ -1087,19 +2226,69 @@
 
         function showPaymentReference(reference) {
             const referenceDiv = document.createElement('div');
-            referenceDiv.className = 'payment-reference';
+            referenceDiv.className = 'payment-reference fade-in';
             referenceDiv.innerHTML = `
-                <h4>Código de Referencia</h4>
-                <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin: 20px 0;">
+                <h3><i class="fas fa-barcode"></i> Código de Referencia</h3>
+                <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-color); margin: 20px 0; font-family: 'Courier New', monospace;">
                     ${reference}
                 </div>
                 <p>Presenta este código en el punto de pago seleccionado</p>
-                <button onclick="window.print()" class="pay-button" style="margin-top: 20px;">
-                    <i class="fas fa-print"></i> Imprimir Referencia
-                </button>
+                <div style="margin-top: 20px;">
+                    <button onclick="window.print()" class="pay-button" style="max-width: 300px; margin: 0 auto;">
+                        <i class="fas fa-print"></i> Imprimir Referencia
+                    </button>
+                </div>
             `;
             
             document.querySelector('.payment-body').appendChild(referenceDiv);
+        }
+
+        function showPaymentSuccess(data) {
+            const statusElement = document.getElementById('payment-status');
+            document.getElementById('transaction-id').textContent = data.transactionId;
+            document.getElementById('payment-method-display').textContent = data.method;
+            document.getElementById('payment-date').textContent = new Date().toLocaleString('es-CO');
+            
+            if (data.authorizationCode) {
+                const authRow = document.createElement('div');
+                authRow.className = 'status-row';
+                authRow.innerHTML = `
+                    <span class="status-label">Código de autorización:</span>
+                    <span class="status-value">${data.authorizationCode}</span>
+                `;
+                document.querySelector('.status-details').appendChild(authRow);
+            }
+            
+            statusElement.classList.add('active');
+            
+            // Ocultar formularios
+            document.querySelectorAll('.payment-form').forEach(form => form.style.display = 'none');
+            
+            // Mostrar modal de éxito
+            setTimeout(() => {
+                showModal('success', '¡Pago Exitoso!', 'Tu pago ha sido procesado correctamente. Recibirás un email de confirmación.');
+            }, 1000);
+        }
+
+        function showModal(type, title, message) {
+            const modal = document.getElementById('modal');
+            const modalIcon = document.getElementById('modal-icon');
+            const modalTitle = document.getElementById('modal-title');
+            const modalMessage = document.getElementById('modal-message');
+            
+            modalIcon.className = `modal-icon ${type}`;
+            modalIcon.innerHTML = type === 'success' ? 
+                '<i class="fas fa-check-circle"></i>' : 
+                '<i class="fas fa-exclamation-circle"></i>';
+            
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
         }
 
         // Simulaciones de API (reemplazar con llamadas reales)
@@ -1155,19 +2344,53 @@
 
         // Funciones de verificación de estado
         async function checkNequiStatus(transactionId) {
-            // Implementar verificación real con API de Nequi
             console.log('Verificando estado de Nequi:', transactionId);
+            // Implementar verificación real con API de Nequi
+            showPaymentSuccess({
+                transactionId: transactionId,
+                amount: PAYMENT_CONFIG.amount,
+                method: 'Nequi'
+            });
         }
 
         async function checkDaviplataStatus(transactionId) {
-            // Implementar verificación real con API de Daviplata
             console.log('Verificando estado de Daviplata:', transactionId);
+            // Implementar verificación real con API de Daviplata
+            showPaymentSuccess({
+                transactionId: transactionId,
+                amount: PAYMENT_CONFIG.amount,
+                method: 'Daviplata'
+            });
         }
 
         async function checkPSEStatus(transactionId) {
-            // Implementar verificación real con API de PSE/Wompi
             console.log('Verificando estado de PSE:', transactionId);
+            // Implementar verificación real con API de PSE/Wompi
+            showPaymentSuccess({
+                transactionId: transactionId,
+                amount: PAYMENT_CONFIG.amount,
+                method: 'PSE - ' + selectedBank.name
+            });
         }
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Prevenir envío de formularios
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+            });
+        });
+
+        // Animación de entrada al cargar
+        window.addEventListener('load', function() {
+            document.querySelector('.payment-container').classList.add('fade-in');
+        });
     </script>
 </body>
 </html>
