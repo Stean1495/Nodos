@@ -296,7 +296,7 @@
             align-items: center;
             gap: 10px;
         }
-
+      
         .order-item {
             display: flex;
             justify-content: space-between;
@@ -1143,6 +1143,7 @@
             <!-- Resumen del pedido -->
             <div class="order-summary">
                 <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Compra</h3>
+            
                 <div class="order-item">
                     <div class="order-item-name">
                         <i class="fas fa-laptop"></i>
@@ -1150,6 +1151,7 @@
                     </div>
                     <div class="order-item-price">$1,299,000 COP</div>
                 </div>
+            
                 <div class="order-item">
                     <div class="order-item-name">
                         <i class="fas fa-tools"></i>
@@ -1157,6 +1159,7 @@
                     </div>
                     <div class="order-item-price">$150,000 COP</div>
                 </div>
+            
                 <div class="order-item">
                     <div class="order-item-name">
                         <i class="fas fa-truck"></i>
@@ -1164,12 +1167,68 @@
                     </div>
                     <div class="order-item-price">$50,000 COP</div>
                 </div>
+            
+                <!-- 🔹 Nuevo campo: Tipo de envío -->
+                <div class="order-item">
+                    <div class="order-item-name">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>Tipo de Envío</span>
+                    </div>
+                    <div class="order-item-price">
+                        <select id="shipping-type" style="
+                            background: transparent;
+                            font-weight: bold;
+                            color: #3f6af5;
+                            border: 1px solid #555;
+                            border-radius: 5px;
+                            padding: 5px 8px;
+                            font-size: 0.9rem;
+                            outline: none;
+                            cursor: pointer;
+                        ">
+                            <option value="domicilio">Domicilio</option>
+                            <option value="tienda">Recoger en tienda</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <!-- 🔹 Nuevo campo: Cantidad -->
+                <div class="order-item">
+                    <div class="order-item-name">
+                        <i class="fas fa-sort-numeric-up"></i>
+                        <span>Cantidad</span>
+                    </div>
+                    <div class="order-item-price">
+                        <input id="quantity" type="number" min="1" value="1" style="
+                            width: 70px;
+                            background: transparent;
+                            color: #fff;
+                            border: 1px solid #555;
+                            border-radius: 5px;
+                            padding: 4px 6px;
+                            text-align: center;
+                            font-size: 0.9rem;
+                            outline: none;
+                        ">
+                    </div>
+                </div>
+            
                 <div class="order-total">
                     <span>Total a Pagar:</span>
                     <span>$1,499,000 COP</span>
                 </div>
             </div>
+            
 
+
+
+
+
+
+
+
+
+            
             <!-- Métodos de pago -->
             <div class="payment-methods">
                 <h3><i class="fas fa-credit-card"></i> Selecciona tu Método de Pago</h3>
@@ -1538,6 +1597,15 @@
     </div>
 
     <script>
+        // Obtener datos desde la URL
+const urlParams = new URLSearchParams(window.location.search);
+const selectedProduct = {
+    nombre: urlParams.get('nombre') || '',
+    precio: parseFloat(urlParams.get('precio')) || 0,
+    tipo: urlParams.get('tipo') || '',
+    id: urlParams.get('id') || ''
+};
+
         // Lista completa de bancos colombianos para PSE
         const colombianBanks = [
             { code: '1007', name: 'Bancolombia', logo: 'BC' },
@@ -2392,5 +2460,147 @@
             document.querySelector('.payment-container').classList.add('fade-in');
         });
     </script>
+
+    
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 🔹 Obtener parámetros desde la URL
+      const params = new URLSearchParams(window.location.search);
+      const nombre = params.get("nombre");
+      const precio = parseFloat(params.get("precio")) || 0;
+      const tipo = params.get("tipo") || "producto";
+      const id = params.get("id") || null;
+    
+      // 🔹 Referencia principal
+      const resumen = document.querySelector(".order-summary");
+    
+      if (!resumen) {
+        console.warn("⚠️ No se encontró el contenedor .order-summary");
+        return;
+      }
+    
+      if (!nombre || !precio) {
+        resumen.innerHTML = `<p style="color:red;">Error: no se recibió ningún producto.</p>`;
+        return;
+      }
+    
+      // 🔹 Construir HTML del resumen
+      resumen.innerHTML = `
+        <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Compra</h3>
+    
+        <div class="order-item">
+          <div class="order-item-name">
+            <i class="fas ${tipo === "curso" ? "fa-chalkboard-teacher" : "fa-box-open"}"></i>
+            <span>${nombre}</span>
+          </div>
+          <div class="order-item-price" id="unit-price">
+            $${precio.toLocaleString("es-CO")} COP
+          </div>
+        </div>
+    
+        <div class="order-item">
+          <div class="order-item-name">
+            <i class="fas fa-truck"></i>
+            <span>Tipo de Envío</span>
+          </div>
+          <div class="order-item-price">
+            <select id="shipping-type" style="
+              background: transparent;
+              font-weight: bold;
+              color: #3f6af5;
+              border: 1px solid #555;
+              border-radius: 5px;
+              padding: 5px 8px;
+              font-size: 0.9rem;
+              outline: none;
+              cursor: pointer;
+            ">
+              <option value="domicilio" data-cost="20000">Domicilio (+$20,000)</option>
+              <option value="tienda" data-cost="0">Recoger en tienda (Gratis)</option>
+            </select>
+          </div>
+        </div>
+    
+        <div class="order-item">
+          <div class="order-item-name">
+            <i class="fas fa-sort-numeric-up"></i>
+            <span>Cantidad</span>
+          </div>
+          <div class="order-item-price">
+            <input id="product-quantity" type="number" min="1" value="1" style="
+              width: 70px;
+              color: #3f6af5;
+              font-weight: bold;
+              background: transparent;
+              border: 1px solid #555;
+              border-radius: 5px;
+              padding: 4px 6px;
+              text-align: center;
+              font-size: 0.9rem;
+              outline: none;
+            ">
+          </div>
+        </div>
+    
+        <div id="subtotal-display" style="
+          text-align: right;
+          font-size: 0.9rem;
+          color: #666;
+          margin-top: -5px;
+          margin-bottom: 10px;
+        ">
+          1 × $${precio.toLocaleString("es-CO")} = $${precio.toLocaleString("es-CO")} COP
+        </div>
+    
+        <div class="order-total">
+          <span>Total a Pagar:</span>
+          <span id="order-total">$${precio.toLocaleString("es-CO")} COP</span>
+        </div>
+      `;
+    
+      // 🔹 Capturar los nuevos elementos generados
+      const cantidadInput = document.getElementById("product-quantity");
+      const envioSelect = document.getElementById("shipping-type");
+      const subtotalDisplay = document.getElementById("subtotal-display");
+      const totalElement = document.getElementById("order-total"); // ✅ se captura después de crear el HTML
+    
+      // 🔹 Función para actualizar total
+      function actualizarTotal() {
+        const cantidad = parseInt(cantidadInput.value) || 1;
+        const costoEnvio = parseInt(envioSelect.selectedOptions[0].dataset.cost) || 0;
+        const subtotal = cantidad * precio;
+        const total = subtotal + costoEnvio;
+    
+        // Mostrar el subtotal visualmente
+        subtotalDisplay.textContent = `${cantidad} × $${precio.toLocaleString("es-CO")} = $${subtotal.toLocaleString("es-CO")} COP`;
+    
+        // Actualizar el total visual
+        totalElement.textContent = `$${total.toLocaleString("es-CO")} COP`;
+    
+        // Guardar datos globales (para pasarela)
+        window.PAYMENT_CONFIG = {
+          ...window.PAYMENT_CONFIG,
+          productName: nombre,
+          tipo,
+          id,
+          cantidad,
+          precioUnitario: precio,
+          envio: costoEnvio,
+          subtotal,
+          total
+        };
+      }
+    
+      // 🔹 Detectar cambios
+      cantidadInput.addEventListener("input", actualizarTotal);
+      envioSelect.addEventListener("change", actualizarTotal);
+    
+      // 🔹 Calcular el total inicial
+      actualizarTotal();
+    });
+    </script>
+    
+    
+        
 </body>
 </html>
