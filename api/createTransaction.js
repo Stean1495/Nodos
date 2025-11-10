@@ -25,12 +25,26 @@ export default async function handler(req, res) {
     const publicKey = process.env.WOMPI_PUBLIC_KEY;
 
     if (!privateKey || !publicKey) {
-      return res.status(500).json({ error: 'WOMPI keys not configured' });
+      return res.status(500).json({ error: '❌ WOMPI keys not configured' });
     }
 
     // ✅ 1. Obtener el acceptance_token desde Wompi
-    const merchantResponse = await fetch(`${baseUrl}/merchants/${publicKey}`);
+    const merchantUrl = `${baseUrl}/merchants/${publicKey}`;
+    console.log('🌐 Consultando merchant en:', merchantUrl);
+
+    const merchantResponse = await fetch(merchantUrl);
     const merchantData = await merchantResponse.json();
+
+    console.log('🔎 Respuesta de Wompi Merchant:', merchantData);
+
+    if (!merchantData?.data?.presigned_acceptance?.acceptance_token) {
+      console.error('❌ No se pudo obtener el acceptance_token:', merchantData);
+      return res.status(500).json({
+        error: 'No se pudo obtener el acceptance_token',
+        wompiResponse: merchantData,
+      });
+    }
+
     const acceptance_token = merchantData.data.presigned_acceptance.acceptance_token;
 
     // ✅ 2. Preparar cuerpo de la transacción
@@ -42,9 +56,10 @@ export default async function handler(req, res) {
       customer_email: customerEmail,
       reference: `NODA_${Date.now()}`,
       acceptance_token,
-      redirect_url: process.env.PAYMENT_RETURN_URL || 'https://nodos.vercel.app/pago-exitoso.html',
+      redirect_url:
+        process.env.PAYMENT_RETURN_URL || 'https://nodos.vercel.app/pago-exitoso.html',
       payment_method: {},
-      metadata: { productName: productName || 'Producto Nodos' }
+      metadata: { productName: productName || 'Producto Nodos' },
     };
 
     if (paymentMethod === 'NEQUI') {
@@ -54,26 +69,30 @@ export default async function handler(req, res) {
         type: 'PSE',
         user_type: 0,
         user_legal_id: '123456789',
-        user_legal_id_type: 'CC'
+        user_legal_id_type: 'CC',
       };
     } else {
       transactionBody.payment_method = { type: paymentMethod };
     }
+
+    console.log('📦 Enviando transacción a Wompi:', transactionBody);
 
     // ✅ 3. Crear la transacción
     const response = await fetch(`${baseUrl}/transactions`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${privateKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(transactionBody)
+      body: JSON.stringify(transactionBody),
     });
 
     const data = await response.json();
+    console.log('✅ Respuesta de Wompi Transaction:', data);
+
     return res.status(response.ok ? 200 : 400).json(data);
   } catch (err) {
-    console.error('createTransaction error', err);
+    console.error('💥 createTransaction error', err);
     return res.status(500).json({ error: err.message });
   }
 }
