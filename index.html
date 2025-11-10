@@ -1971,34 +1971,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Sección de productos -->
     <section id="products" class="products-section">
         <div class="container">
@@ -2020,7 +1992,6 @@
             <!-- Contenido de pestañas -->
             <div class="tab-content active" id="equipos">
                 <div class="products-grid">
-                  
                 
                 
                 </div>
@@ -2036,12 +2007,6 @@
             <div class="tab-content" id="desarrollos">
                 <div class="products-grid">
                    
-                   
-                    
-                
-                
-                   
-                 
                 </div>
             </div>
         </div>
@@ -2955,88 +2920,75 @@
   </script>
   
   <!-- 🔹 NUEVO SCRIPT SUPABASE -->
+
+  
   <script type="module">
     import { supabase } from './lib/supabaseClient.js'
-  
+    
     async function cargarProductos() {
       try {
         const { data: productos, error } = await supabase.from('productos').select('*')
         if (error) throw error
-  
+    
         console.log('✅ Productos desde Supabase:', productos)
-  
+    
         const seccionEquipos = document.querySelector('#equipos .products-grid')
         const seccionPiezas = document.querySelector('#piezas .products-grid')
         const seccionDesarrollos = document.querySelector('#desarrollos .products-grid')
-  
-        if (!seccionEquipos || !seccionPiezas || !seccionDesarrollos) {
-          console.warn('⚠️ No se encontraron los contenedores de productos en el HTML.')
-          return
-        }
-  
+    
+        if (!seccionEquipos || !seccionPiezas || !seccionDesarrollos) return
+    
         seccionEquipos.innerHTML = ''
         seccionPiezas.innerHTML = ''
         seccionDesarrollos.innerHTML = ''
-  
+    
         productos.forEach(prod => {
-  const nombreEscapado = encodeURIComponent(prod.nombre); // 🚨 Escapar el nombre
-
-  const card = `
-    <div class="product-card">
-      <div class="product-image">
-        <img src="${prod.imagen_url}" alt="${prod.nombre}">
-        ${prod.etiqueta ? `<span class="product-badge">${prod.etiqueta}</span>` : ''}
-      </div>
-      <div class="product-content">
-        <h3>${prod.nombre}</h3>
-        <p>${prod.descripcion || ''}</p>
-        <div class="product-price">$${prod.precio}</div>
-        <button class="product-btn" onclick="openPurchaseModal('${nombreEscapado}', ${prod.precio}, 'producto', ${prod.id})">
-          Comprar ahora
-        </button>
-      </div>
-    </div>
-  `;
-
-  if (prod.categoria === 'equipos') seccionEquipos.insertAdjacentHTML('beforeend', card)
-  else if (prod.categoria === 'piezas') seccionPiezas.insertAdjacentHTML('beforeend', card)
-  else if (prod.categoria === 'desarrollos') seccionDesarrollos.insertAdjacentHTML('beforeend', card)
-});
-
-  
-        if (productos.length === 0) {
-          seccionEquipos.innerHTML = '<p>No hay productos disponibles.</p>'
-        }
+          const card = document.createElement('div')
+          card.className = 'product-card'
+          card.innerHTML = `
+            <div class="product-image">
+              <img src="${prod.imagen_url}" alt="${prod.nombre}">
+              ${prod.etiqueta ? `<span class="product-badge">${prod.etiqueta}</span>` : ''}
+            </div>
+            <div class="product-content">
+              <h3>${prod.nombre}</h3>
+              <p>${prod.descripcion || ''}</p>
+              <div class="product-price">$${prod.precio}</div>
+              <button class="product-btn">Comprar ahora</button>
+            </div>
+          `
+    
+          const btn = card.querySelector('.product-btn')
+          btn.addEventListener('click', () => {
+            openPurchaseModal(prod.nombre, prod.precio, 'producto', prod.id)
+          })
+    
+          if (prod.categoria === 'equipos') seccionEquipos.appendChild(card)
+          else if (prod.categoria === 'piezas') seccionPiezas.appendChild(card)
+          else if (prod.categoria === 'desarrollos') seccionDesarrollos.appendChild(card)
+        })
+    
       } catch (err) {
         console.error('❌ Error cargando productos:', err.message)
       }
     }
-  
-    document.addEventListener('DOMContentLoaded', cargarProductos)
-  </script>
-  
-  <!-- 🔹 SCRIPT SUPABASE CURSOS -->
-<script type="module">
-  import { supabase } from './lib/supabaseClient.js'
-
-  async function cargarCursos() {
-    try {
-      const { data: cursos, error } = await supabase.from('cursos').select('*')
-      if (error) throw error
-
-      console.log('✅ Cursos desde Supabase:', cursos)
-
-      const seccionCursos = document.querySelector('#courses .courses-grid')
-      if (!seccionCursos) {
-        console.warn('⚠️ No se encontró el contenedor de cursos en el HTML.')
-        return
-      }
-
-      seccionCursos.innerHTML = '' // limpiar contenido
-
-      cursos.forEach(curso => {
-        const card = `
-          <div class="course-card">
+    
+    async function cargarCursos() {
+      try {
+        const { data: cursos, error } = await supabase.from('cursos').select('*')
+        if (error) throw error
+    
+        console.log('✅ Cursos desde Supabase:', cursos)
+    
+        const seccionCursos = document.querySelector('#courses .courses-grid')
+        if (!seccionCursos) return
+    
+        seccionCursos.innerHTML = ''
+    
+        cursos.forEach(curso => {
+          const card = document.createElement('div')
+          card.className = 'course-card'
+          card.innerHTML = `
             <div class="course-image">
               <img src="${curso.imagen_url}" alt="${curso.nombre}">
               ${curso.etiqueta ? `<span class="course-badge">${curso.etiqueta}</span>` : ''}
@@ -3049,27 +3001,35 @@
                 <span class="course-level"><i class="fas fa-signal"></i> ${curso.nivel}</span>
               </div>
               <div class="course-price">$${curso.precio}</div>
-        <a href="#" class="course-btn" onclick="openPurchaseModal('${curso.nombre}', ${curso.precio}, 'curso', ${curso.id})">
-  Inscribirse
-</a>
-
+              <a href="#" class="course-btn">Inscribirse</a>
             </div>
-          </div>
-        `
-        seccionCursos.insertAdjacentHTML('beforeend', card)
-      })
-
-      if (cursos.length === 0) {
-        seccionCursos.innerHTML = '<p>No hay cursos disponibles.</p>'
+          `
+    
+          const btn = card.querySelector('.course-btn')
+          btn.addEventListener('click', (e) => {
+            e.preventDefault()
+            openPurchaseModal(curso.nombre, curso.precio, 'curso', curso.id)
+          })
+    
+          seccionCursos.appendChild(card)
+        })
+    
+      } catch (err) {
+        console.error('❌ Error cargando cursos:', err.message)
       }
-
-    } catch (err) {
-      console.error('❌ Error cargando cursos:', err.message)
     }
-  }
-
-  document.addEventListener('DOMContentLoaded', cargarCursos)
-</script>
-
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarProductos()
+      cargarCursos()
+    })
+    
+    // Función global
+    window.openPurchaseModal = function(nombre, precio, tipo, id) {
+      const nombreCodificado = encodeURIComponent(nombre)
+      window.location.href = `pasarela.html?tipo=${tipo}&id=${id}&nombre=${nombreCodificado}&precio=${precio}`
+    }
+    </script>
+    
 </body>
 </html>
