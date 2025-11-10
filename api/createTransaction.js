@@ -1,6 +1,13 @@
 // /api/createTransaction.js
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  // 👇 Esto te permite probar el endpoint desde el navegador
+  if (req.method === 'GET') {
+    return res.status(200).json({ message: '✅ API funcionando correctamente en Vercel' });
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   try {
     const { amount, currency = 'COP', customerEmail, paymentMethod, phone, productName } = req.body;
@@ -16,7 +23,8 @@ export default async function handler(req, res) {
         : 'https://sandbox.wompi.co/v1/transactions';
 
     const privateKey = process.env.WOMPI_PRIVATE_KEY;
-    if (!privateKey) return res.status(500).json({ error: 'WOMPI_PRIVATE_KEY not configured' });
+    if (!privateKey)
+      return res.status(500).json({ error: 'WOMPI_PRIVATE_KEY not configured' });
 
     const amountInCents = Math.round(Number(amount) * 100);
 
@@ -30,7 +38,6 @@ export default async function handler(req, res) {
       payment_method: {}
     };
 
-    // 💡 Aquí definimos correctamente el método de pago
     if (paymentMethod === 'NEQUI') {
       transactionBody.payment_method = { type: 'NEQUI', phone_number: phone };
     } else if (paymentMethod === 'PSE') {
