@@ -1,79 +1,57 @@
-// /api/createTransaction.js
-export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    return res.status(200).json({ message: '✅ API funcionando correctamente en Vercel' });
-  }
+// /api/webhook.js
+import crypto from 'crypto';
 
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { amount, currency = 'COP', customerEmail, paymentMethod, phone, productName } = req.body;
+    const secret = process.env.WOMPI_WEBHOOK_SECRET || 'test_integrity_WC61fEpAPS0qkeQoyJC0Ivjc7cpyaqkg';
 
-    if (!amount || !customerEmail || !paymentMethod) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    // 🧩 1. Capturar el evento enviado por Wompi
+    const event = req.body;
+
+    // 🧩 2. Validar integridad (opcional pero recomendado)
+    const signature = req.headers['x-signature-integrity'] || req.headers['X-Signature-Integrity'];
+
+    if (signature) {
+      const computedSignature = crypto
+        .createHmac('sha256', secret)
+        .update(JSON.stringify(event))
+        .digest('hex');
+
+      if (computedSignature !== signature) {
+        console.warn('❌ Firma de webhook inválida');
+        return res.status(400).json({ error: 'Invalid signature' });
+      }
     }
 
-    const ENV = process.env.WOMPI_ENV === 'production' ? 'production' : 'sandbox';
-    const baseUrl =
-      ENV === 'production'
-        ? 'https://production.wompi.co/v1'
-        : 'https://sandbox.wompi.co/v1';
+    // 🧠 3. Procesar el evento según el estado del pago
+    const transaction = event.data?.transaction || {};
+    const status = transaction.status;
+    const reference = transaction.reference;
+    const id = transaction.id;
 
-    const privateKey = process.env.WOMPI_PRIVATE_KEY;
-    const publicKey = process.env.WOMPI_PUBLIC_KEY;
+    console.log(`💬 Webhook recibido: transacción ${id} (${reference}) - Estado: ${status}`);
 
-    if (!privateKey || !publicKey) {
-      return res.status(500).json({ error: 'WOMPI keys not configured' });
-    }
-
-    // ✅ 1. Obtener el acceptance_token desde Wompi
-    const merchantResponse = await fetch(`${baseUrl}/merchants/${publicKey}`);
-    const merchantData = await merchantResponse.json();
-    const acceptance_token = merchantData.data.presigned_acceptance.acceptance_token;
-
-    // ✅ 2. Preparar cuerpo de la transacción
-    const amountInCents = Math.round(Number(amount) * 100);
-
-    const transactionBody = {
-      amount_in_cents: amountInCents,
-      currency,
-      customer_email: customerEmail,
-      reference: `NODA_${Date.now()}`,
-      acceptance_token,
-      redirect_url: process.env.PAYMENT_RETURN_URL || 'https://nodos.vercel.app/pago-exitoso.html',
-      payment_method: {},
-      metadata: { productName: productName || 'Producto Nodos' }
-    };
-
-    if (paymentMethod === 'NEQUI') {
-      transactionBody.payment_method = { type: 'NEQUI', phone_number: phone };
-    } else if (paymentMethod === 'PSE') {
-      transactionBody.payment_method = {
-        type: 'PSE',
-        user_type: 0,
-        user_legal_id: '123456789',
-        user_legal_id_type: 'CC'
-      };
-    } else {
-      transactionBody.payment_method = { type: paymentMethod };
-    }
-
-    // ✅ 3. Crear la transacción
-    const response = await fetch(`${baseUrl}/transactions`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${privateKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(transactionBody)
+    // Aquí podrías guardar en tu base de datos si quieres
+    // Ejemplo:
+    /*
+    import { createClient } from '@supabase/supabase-js';
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+    await supabase.from('transactions').insert({
+      wompi_id: id,
+      reference,
+      status,
+      raw_data: event
     });
+    */
 
-    const data = await response.json();
-    return res.status(response.ok ? 200 : 400).json(data);
+    // 🟢 Responder a Wompi que recibiste el evento
+    return res.status(200).json({ received: true });
   } catch (err) {
-    console.error('createTransaction error', err);
+    console.error('Webhook error:', err);
     return res.status(500).json({ error: err.message });
   }
 }
