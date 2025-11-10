@@ -1596,6 +1596,22 @@
         </div>
     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <script>
         // Obtener datos desde la URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -1847,226 +1863,263 @@ const selectedProduct = {
 
         // Procesar pago Nequi
         async function processNequiPayment() {
-            const phone = document.getElementById('nequi-phone').value;
-            const name = document.getElementById('nequi-name').value;
-            
-            if (!validateNequiForm(phone, name)) {
-                return;
-            }
-            
-            updateProgressBar(2);
-            showLoading();
-            
-            try {
-                // Simular llamada a API de Nequi
-                const response = await simulateNequiPayment({
-                    phone: phone,
-                    name: name,
-                    amount: PAYMENT_CONFIG.amount,
-                    description: PAYMENT_CONFIG.description
-                });
-                
-                if (response.success) {
-                    currentTransactionId = response.transactionId;
-                    
-                    // Mostrar QR
-                    const qrContainer = document.getElementById('nequi-qr');
-                    qrContainer.style.display = 'block';
-                    qrContainer.classList.add('bounce');
-                    
-                    // Iniciar contador
-                    startCountdown(300, () => {
-                        checkNequiStatus(response.transactionId);
-                    });
-                    
-                    showSuccess('¡Listo! Revisa tu app de Nequi para confirmar el pago');
-                    updateProgressBar(3);
-                } else {
-                    showError(response.message || 'Error al procesar el pago con Nequi');
-                    updateProgressBar(1);
-                }
-            } catch (error) {
-                showError('Error de conexión. Intenta nuevamente.');
-                updateProgressBar(1);
-            } finally {
-                hideLoading();
-            }
+    const phone = document.getElementById('nequi-phone').value;
+    const name = document.getElementById('nequi-name').value;
+    
+    if (!validateNequiForm(phone, name)) return;
+    
+    updateProgressBar(2);
+    showLoading();
+
+    try {
+        const response = await fetch('/api/createTransaction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: PAYMENT_CONFIG.amount,
+                currency: 'COP',
+                customerEmail: `${phone}@noda.tech`,
+                paymentMethod: 'NEQUI',
+                productName: selectedProduct.nombre || 'Compra Noda Tech',
+                reference: `NODA_${Date.now()}`
+            })
+        });
+
+        const data = await response.json();
+        console.log('Respuesta de /api/createTransaction:', data);
+
+        if (response.ok && data.data) {
+            currentTransactionId = data.data.id || data.data.transaction_id;
+
+            const qrContainer = document.getElementById('nequi-qr');
+            qrContainer.style.display = 'block';
+            qrContainer.classList.add('bounce');
+
+            startCountdown(300, () => {
+                checkNequiStatus(currentTransactionId);
+            });
+
+            showSuccess('¡Listo! Revisa tu app de Nequi para confirmar el pago');
+            updateProgressBar(3);
+        } else {
+            showError(data.error || 'Error al crear la transacción con Nequi');
+            updateProgressBar(1);
         }
+    } catch (err) {
+        console.error('Error al conectar con el backend:', err);
+        showError('Error de conexión. Intenta nuevamente.');
+        updateProgressBar(1);
+    } finally {
+        hideLoading();
+    }
+}
+
 
         // Procesar pago Daviplata
         async function processDaviplataPayment() {
-            const phone = document.getElementById('daviplata-phone').value;
-            const id = document.getElementById('daviplata-id').value;
-            
-            if (!validateDaviplataForm(phone, id)) {
-                return;
-            }
-            
-            updateProgressBar(2);
-            showLoading();
-            
-            try {
-                const response = await simulateDaviplataPayment({
-                    phone: phone,
-                    identification: id,
-                    amount: PAYMENT_CONFIG.amount,
-                    description: PAYMENT_CONFIG.description
-                });
-                
-                if (response.success) {
-                    currentTransactionId = response.transactionId;
-                    
-                    showSuccess('¡Listo! Revisa tu app de Daviplata para confirmar el pago');
-                    
-                    // Verificar estado
-                    setTimeout(() => {
-                        checkDaviplataStatus(response.transactionId);
-                    }, 5000);
-                    
-                    updateProgressBar(3);
-                } else {
-                    showError(response.message || 'Error al procesar el pago con Daviplata');
-                    updateProgressBar(1);
-                }
-            } catch (error) {
-                showError('Error de conexión. Intenta nuevamente.');
-                updateProgressBar(1);
-            } finally {
-                hideLoading();
-            }
+    const phone = document.getElementById('daviplata-phone').value;
+    const id = document.getElementById('daviplata-id').value;
+
+    if (!validateDaviplataForm(phone, id)) return;
+
+    updateProgressBar(2);
+    showLoading();
+
+    try {
+        const response = await fetch('/api/createTransaction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: PAYMENT_CONFIG.amount,
+                currency: 'COP',
+                customerEmail: `${phone}@noda.tech`,
+                paymentMethod: 'DAVIPLATA',
+                productName: selectedProduct.nombre || 'Compra Noda Tech',
+                reference: `NODA_${Date.now()}`
+            })
+        });
+
+        const data = await response.json();
+        console.log('Respuesta de /api/createTransaction (Daviplata):', data);
+
+        if (response.ok && data.data) {
+            currentTransactionId = data.data.id;
+            showSuccess('¡Listo! Revisa tu app de Daviplata para confirmar el pago');
+
+            setTimeout(() => {
+                checkDaviplataStatus(currentTransactionId);
+            }, 5000);
+
+            updateProgressBar(3);
+        } else {
+            showError(data.error || 'Error al crear la transacción con Daviplata');
+            updateProgressBar(1);
         }
+    } catch (err) {
+        console.error('Error Daviplata:', err);
+        showError('Error de conexión. Intenta nuevamente.');
+        updateProgressBar(1);
+    } finally {
+        hideLoading();
+    }
+}
+
 
         // Procesar pago PSE
         async function processPSEPayment() {
-            if (!selectedBank) {
-                showError('Por favor selecciona tu banco');
-                return;
-            }
-            
-            const formData = getPSEFormData();
-            if (!validatePSEForm(formData)) {
-                return;
-            }
-            
-            updateProgressBar(2);
-            showLoading();
-            
-            try {
-                const response = await simulatePSEPayment({
-                    bank: selectedBank,
-                    ...formData,
-                    amount: PAYMENT_CONFIG.amount,
-                    description: PAYMENT_CONFIG.description,
-                    returnURL: PAYMENT_CONFIG.returnUrl,
-                    reference: 'NODA_' + Date.now()
-                });
-                
-                if (response.success) {
-                    currentTransactionId = response.transactionId;
-                    
-                    // Redirigir al banco
-                    showModal('success', 'Redirigiendo al banco', 'Serás redirigido a la página de tu banco para completar el pago. No cierres esta ventana.');
-                    
-                    setTimeout(() => {
-                        window.open(response.paymentURL, '_blank');
-                    }, 2000);
-                    
-                    // Iniciar verificación
-                    startCountdown(600, () => {
-                        checkPSEStatus(response.transactionId);
-                    });
-                    
-                    updateProgressBar(3);
-                } else {
-                    showError(response.message || 'Error al procesar el pago con PSE');
-                    updateProgressBar(1);
+    if (!selectedBank) {
+        showError('Por favor selecciona tu banco');
+        return;
+    }
+
+    const formData = getPSEFormData();
+    if (!validatePSEForm(formData)) return;
+
+    updateProgressBar(2);
+    showLoading();
+
+    try {
+        const response = await fetch('/api/createTransaction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: PAYMENT_CONFIG.amount,
+                currency: 'COP',
+                customerEmail: formData.email,
+                paymentMethod: 'PSE',
+                productName: selectedProduct.nombre || 'Compra Noda Tech',
+                reference: `NODA_${Date.now()}`
+            })
+        });
+
+        const data = await response.json();
+        console.log('Respuesta de /api/createTransaction (PSE):', data);
+
+        if (response.ok && data.data) {
+            currentTransactionId = data.data.id;
+
+            showModal('success', 'Redirigiendo al banco', 'Serás redirigido a la página de tu banco para completar el pago.');
+
+            setTimeout(() => {
+                if (data.data.payment_method && data.data.payment_method.extra && data.data.payment_method.extra.async_payment_url) {
+                    window.open(data.data.payment_method.extra.async_payment_url, '_blank');
                 }
-            } catch (error) {
-                showError('Error de conexión. Intenta nuevamente.');
-                updateProgressBar(1);
-            } finally {
-                hideLoading();
-            }
+            }, 2000);
+
+            startCountdown(600, () => {
+                checkPSEStatus(currentTransactionId);
+            });
+
+            updateProgressBar(3);
+        } else {
+            showError(data.error || 'Error al procesar el pago con PSE');
+            updateProgressBar(1);
         }
+    } catch (err) {
+        console.error('Error PSE:', err);
+        showError('Error de conexión. Intenta nuevamente.');
+        updateProgressBar(1);
+    } finally {
+        hideLoading();
+    }
+}
+
 
         // Procesar pago con tarjeta
-        async function processCardPayment() {
-            const cardData = getCardFormData();
-            if (!validateCardForm(cardData)) {
-                return;
-            }
-            
-            updateProgressBar(2);
-            showLoading();
-            
-            try {
-                const response = await simulateCardPayment({
-                    ...cardData,
-                    amount: PAYMENT_CONFIG.amount,
-                    description: PAYMENT_CONFIG.description
-                });
-                
-                if (response.success) {
-                    currentTransactionId = response.orderId;
-                    
-                    showPaymentSuccess({
-                        transactionId: response.orderId,
-                        amount: PAYMENT_CONFIG.amount,
-                        method: 'Tarjeta de crédito/débito',
-                        authorizationCode: response.authorizationCode
-                    });
-                    
-                    updateProgressBar(3);
-                } else {
-                    showError(response.message || 'Error al procesar el pago');
-                    updateProgressBar(1);
-                }
-            } catch (error) {
-                showError('Error de conexión. Intenta nuevamente.');
-                updateProgressBar(1);
-            } finally {
-                hideLoading();
-            }
-        }
+      // Procesar pago con tarjeta (real)
+async function processCardPayment() {
+  const cardData = getCardFormData();
+  if (!validateCardForm(cardData)) return;
+
+  updateProgressBar(2);
+  showLoading();
+
+  try {
+    const response = await fetch('/api/createTransaction', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: PAYMENT_CONFIG.amount,
+        currency: 'COP',
+        customerEmail: cardData.cardEmail,
+        paymentMethod: 'CARD',
+        productName: selectedProduct.nombre || 'Compra Noda Tech',
+        reference: `NODA_${Date.now()}`,
+        card: cardData
+      })
+    });
+
+    const data = await response.json();
+    console.log('💳 Respuesta de /api/createTransaction (Tarjeta):', data);
+
+    if (response.ok && data.data) {
+      currentTransactionId = data.data.id;
+      showPaymentSuccess({
+        transactionId: currentTransactionId,
+        amount: PAYMENT_CONFIG.amount,
+        method: 'Tarjeta',
+        authorizationCode: data.data.authorization_code
+      });
+      updateProgressBar(3);
+    } else {
+      showError(data.error || 'Error al procesar el pago con tarjeta');
+      updateProgressBar(1);
+    }
+  } catch (err) {
+    console.error('❌ Error Tarjeta:', err);
+    showError('Error de conexión. Intenta nuevamente.');
+    updateProgressBar(1);
+  } finally {
+    hideLoading();
+  }
+}
+
+// Procesar pago en efectivo (real)
+async function processCashPayment() {
+  const cashData = getCashFormData();
+  if (!validateCashForm(cashData)) return;
+
+  updateProgressBar(2);
+  showLoading();
+
+  try {
+    const response = await fetch('/api/createTransaction', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: PAYMENT_CONFIG.amount,
+        currency: 'COP',
+        customerEmail: cashData.email,
+        paymentMethod: 'CASH',
+        productName: selectedProduct.nombre || 'Compra Noda Tech',
+        reference: `NODA_${Date.now()}`
+      })
+    });
+
+    const data = await response.json();
+    console.log('💵 Respuesta de /api/createTransaction (Efectivo):', data);
+
+    if (response.ok && data.data) {
+      currentTransactionId = data.data.id;
+      showPaymentReference(data.data.reference);
+      showSuccess('Orden generada. Presenta este código en el punto de pago.');
+      updateProgressBar(3);
+    } else {
+      showError(data.error || 'Error al generar la orden');
+      updateProgressBar(1);
+    }
+  } catch (err) {
+    console.error('❌ Error Efectivo:', err);
+    showError('Error de conexión. Intenta nuevamente.');
+    updateProgressBar(1);
+  } finally {
+    hideLoading();
+  }
+}
+
 
         // Procesar pago en efectivo
-        async function processCashPayment() {
-            const cashData = getCashFormData();
-            if (!validateCashForm(cashData)) {
-                return;
-            }
-            
-            updateProgressBar(2);
-            showLoading();
-            
-            try {
-                const response = await simulateCashPayment({
-                    ...cashData,
-                    amount: PAYMENT_CONFIG.amount,
-                    description: PAYMENT_CONFIG.description,
-                    reference: 'NODA_' + Date.now()
-                });
-                
-                if (response.success) {
-                    currentTransactionId = response.reference;
-                    
-                    showSuccess('¡Orden generada! Presenta este código en el punto de pago: ' + response.reference);
-                    
-                    // Mostrar código de barras o QR
-                    showPaymentReference(response.reference);
-                    
-                    updateProgressBar(3);
-                } else {
-                    showError(response.message || 'Error al generar la orden');
-                    updateProgressBar(1);
-                }
-            } catch (error) {
-                showError('Error de conexión. Intenta nuevamente.');
-                updateProgressBar(1);
-            } finally {
-                hideLoading();
-            }
-        }
+       
 
         // Funciones de validación
         function validateNequiForm(phone, name) {
@@ -2359,56 +2412,8 @@ const selectedProduct = {
             document.getElementById('modal').classList.remove('active');
         }
 
-        // Simulaciones de API (reemplazar con llamadas reales)
-        async function simulateNequiPayment(data) {
-            // Simular delay de red
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Simular respuesta exitosa
-            return {
-                success: true,
-                transactionId: 'NEQ_' + Date.now(),
-                qrCode: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
-            };
-        }
+      
 
-        async function simulateDaviplataPayment(data) {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            return {
-                success: true,
-                transactionId: 'DAV_' + Date.now()
-            };
-        }
-
-        async function simulatePSEPayment(data) {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            return {
-                success: true,
-                transactionId: 'PSE_' + Date.now(),
-                paymentURL: `https://sandbox.wompi.co/v1/transactions/${data.reference}`
-            };
-        }
-
-        async function simulateCardPayment(data) {
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            
-            return {
-                success: true,
-                orderId: 'ORD_' + Date.now(),
-                authorizationCode: 'AUTH_' + Math.random().toString(36).substr(2, 9).toUpperCase()
-            };
-        }
-
-        async function simulateCashPayment(data) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            return {
-                success: true,
-                reference: data.reference
-            };
-        }
 
         // Funciones de verificación de estado
         async function checkNequiStatus(transactionId) {
